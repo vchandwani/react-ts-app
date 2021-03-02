@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import DisplayPost from '../components/DisplayPost/DisplayPost';
 import NewPost from '../components/NewPost/NewPost';
 
@@ -34,8 +34,10 @@ const Blog: React.FC = (): JSX.Element => (
             <p>Articles can be added, edited and deleted</p>
           </Col>
         </Row>
-        <Route path="/" exact component={DisplayPost} />
-        <Route path="/newArticle/:id" component={NewPost} />
+        <Switch>
+          <Route path="/newArticle" exact component={NewPost} />
+          <Route path="/" component={DisplayPost} />
+        </Switch>
       </div>
     </Router>
   </Container>
