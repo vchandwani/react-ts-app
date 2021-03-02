@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Col, Card, Button } from 'react-bootstrap';
+import { Grid } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import EditIcon from '@material-ui/icons/Edit';
 
 interface PostProps {
-  key: number;
   title: string;
   author: string;
   content: string;
@@ -43,13 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Post = ({
-  key,
-  title,
-  author,
-  content,
-  clicked,
-}: PostProps): JSX.Element => {
+const Post = ({ title, author, content, clicked }: PostProps): JSX.Element => {
   const [characterLength, setCharacterLength] = useState(20);
   const [fullRead, setFullRead] = useState(false);
   const styles = useStyles({});
@@ -60,18 +55,11 @@ const Post = ({
   };
 
   return (
-    <Col
-      xs={12}
-      sm={4}
-      className="mt-1 mb-1"
-      onClick={clicked}
-      data-test="post-div"
-      key={key}
-    >
+    <Col xs={12} sm={4} className="mt-1 mb-1" data-test="post-div">
       <Card
         className={[styles.postDiv, fullRead && styles.height100].join(' ')}
       >
-        <Card.Body>
+        <Card.Body onClick={clicked}>
           <Card.Title data-test="post-title">
             {title.length > characterLength
               ? title.substring(0, characterLength)
@@ -85,14 +73,22 @@ const Post = ({
           {author && <Card.Text>{author}</Card.Text>}
         </Card.Body>
         <Card.Body>
-          <Button
-            data-test="post-button"
-            className="ReadMore"
-            variant="primary"
-            onClick={readMore}
+          <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
           >
-            Read more
-          </Button>
+            <Button
+              data-test="post-button"
+              className="ReadMore"
+              variant="primary"
+              onClick={readMore}
+            >
+              Read more
+            </Button>
+            <EditIcon />
+          </Grid>
         </Card.Body>
       </Card>
     </Col>
