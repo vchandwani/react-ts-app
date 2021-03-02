@@ -12,3 +12,11 @@ export enum NotificationType {
   INFO = 'info',
   SUCCESS = 'success',
 }
+
+export type Obj = Record<string, string | null | boolean>;
+export type Values = Record<
+  string,
+  string | number | boolean | Date | string[] | Obj | undefined
+>;
+
+export const URL = 'https://jsonplaceholder.typicode.com/posts';

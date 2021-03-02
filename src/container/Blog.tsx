@@ -35,7 +35,8 @@ const Blog: React.FC = (): JSX.Element => (
           </Col>
         </Row>
         <Switch>
-          <Route path="/newArticle" exact component={NewPost} />
+          <Route path="/newArticle/" exact component={NewPost} />
+          <Route path="/newArticle/:id" exact component={NewPost} />
           <Route path="/" component={DisplayPost} />
         </Switch>
       </div>

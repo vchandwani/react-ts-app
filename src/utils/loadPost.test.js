@@ -1,5 +1,6 @@
 import { loadPost } from './loadPost';
 import { server, rest } from '../testServer';
+import { URL } from '../types/post/data';
 
 test('Check loadPost api get call with correct data', async () => {
   const loadPostData = await loadPost(1);
@@ -10,13 +11,6 @@ test('Check loadPost api get call with correct data', async () => {
 });
 
 test('Check loadPost api get call with wrong data', async () => {
-  server.use(
-    rest.get(
-      'https://jsonplaceholder.typicode.com/posts/2',
-      (req, res, ctx) => {
-        return res(ctx.status(404));
-      },
-    ),
-  );
+  server.use(rest.get(`${URL}/2`, (req, res, ctx) => res(ctx.status(404))));
   await expect(loadPost()).rejects.toThrow('Error');
 });

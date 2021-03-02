@@ -5,7 +5,8 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
 import FullPost from '../FullPost/FullPost';
 import { loadPost } from '../../utils/loadPost';
-import { PostDataObj } from '../../types/post/data';
+import { PostDataObj, URL } from '../../types/post/data';
+import BackDrop from '../BackDrop/BackDrop';
 
 const useStyles = makeStyles((theme: Theme) => ({
   loadMoreDiv: {
@@ -27,20 +28,22 @@ const DisplayPost: React.FC = (): JSX.Element => {
     undefined
   );
   const [clickCounter, setClickCounter] = useState<number>(1);
-  const [displayCount, setDisplayCount] = useState<number>(4);
+  const displayCount: number = 4;
   const [loadedPost, setLoadedPost] = useState<PostDataObj | undefined>(
     undefined
   );
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => {
+    setLoading(true);
+    axios.get(URL).then((response) => {
       const postsResponse = response.data;
       const updatedPosts = postsResponse.map((post: PostDataObj) => ({
         ...post,
         author: 'Varun',
       }));
       setPosts(updatedPosts);
+      setLoading(false);
       // console.log( response );
     });
   }, []);
@@ -94,6 +97,8 @@ const DisplayPost: React.FC = (): JSX.Element => {
   };
   return (
     <>
+      <BackDrop open={loading} />
+
       {postsDisplay && (
         <Row>
           {postsDisplay.map((post: PostDataObj, index: number) => (
@@ -101,7 +106,9 @@ const DisplayPost: React.FC = (): JSX.Element => {
               key={post.userId.toString().concat(index.toString())}
               title={post.title}
               author={post?.author ? post?.author : ''}
-              content={post.body}
+              body={post.body}
+              id={post.id}
+              userId={post.userId}
               clicked={() => postSelectedHandler(post.id)}
             />
           ))}

@@ -1,8 +1,9 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import { URL } from './types/post/data';
 
 const server = setupServer(
-  rest.get('https://jsonplaceholder.typicode.com/posts/1', (req, res, ctx) =>
+  rest.get(`${URL}/1`, (req, res, ctx) =>
     res(
       ctx.status(200),
       ctx.json({

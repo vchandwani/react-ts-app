@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Col, Card, Button } from 'react-bootstrap';
+import { Col, Card, Button, Nav } from 'react-bootstrap';
 import { Grid } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
+import { Link } from 'react-router-dom';
+import { PostDataObj } from '../../types/post/data';
 
-interface PostProps {
-  title: string;
-  author: string;
-  content: string;
+interface PostProps extends PostDataObj {
   clicked(): void;
 }
 
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Post = ({ title, author, content, clicked }: PostProps): JSX.Element => {
+const Post = ({ title, author, body, clicked, id }: PostProps): JSX.Element => {
   const [characterLength, setCharacterLength] = useState(20);
   const [fullRead, setFullRead] = useState(false);
   const styles = useStyles({});
@@ -66,9 +65,9 @@ const Post = ({ title, author, content, clicked }: PostProps): JSX.Element => {
               : title}
           </Card.Title>
           <Card.Text data-test="post-content">
-            {content.length > characterLength
-              ? content.substring(0, characterLength)
-              : content}
+            {body.length > characterLength
+              ? body.substring(0, characterLength)
+              : body}
           </Card.Text>
           {author && <Card.Text>{author}</Card.Text>}
         </Card.Body>
@@ -87,7 +86,9 @@ const Post = ({ title, author, content, clicked }: PostProps): JSX.Element => {
             >
               Read more
             </Button>
-            <EditIcon />
+            <Nav.Link as={Link} to={`/newArticle/${id}`}>
+              <EditIcon />
+            </Nav.Link>
           </Grid>
         </Card.Body>
       </Card>

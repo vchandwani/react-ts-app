@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import { PostDataObj, NotificationType } from '../../types/post/data';
+import { PostDataObj, NotificationType, URL } from '../../types/post/data';
 
 export interface FullPostProps {
   id: number | undefined;
@@ -62,9 +62,7 @@ const FullPost = ({
   loading,
   deleteOperation,
 }: FullPostProps): JSX.Element => {
-  const url: string = 'https://jsonplaceholder.typicode.com/posts/'.concat(
-    id ? id.toString() : ''
-  );
+  const url: string = `${URL}/`.concat(id ? id.toString() : '');
   const styles = useStyles({});
   const [open, setOpen] = useState<boolean>(false);
   const [notificationOpen, setNotificationOpen] = useState<boolean>(false);
@@ -116,23 +114,6 @@ const FullPost = ({
   );
   const deletePostHandler = async () => {
     // confirmation message before proceeding
-
-    // const data = {
-    //   title: 'this.state.title',
-    //   content: 'this.state.content',
-    //   author: 'this.state.author',
-    // };
-    // axios
-    //   .post('https://jsonplaceholder.typicode.com/posts', data, {
-    //     headers: {
-    //       'Content-Type': 'application/json; carset=UTF-8',
-    //       'Access-Control-Allow-Origin': '*',
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //   });
-
     await axios
       .delete(url, {
         headers: {
