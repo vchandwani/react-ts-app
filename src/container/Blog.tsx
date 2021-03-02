@@ -25,6 +25,7 @@ const Blog: React.FC = (): JSX.Element => {
   const [selectedPostId, setSelectedPostId] = useState<number | undefined>(
     undefined
   );
+  const [clickCounter, setClickCounter] = useState<number>(1);
   const [displayCount, setDisplayCount] = useState<number>(4);
   const [loadedPost, setLoadedPost] = useState<PostDataObj | undefined>(
     undefined
@@ -50,6 +51,15 @@ const Blog: React.FC = (): JSX.Element => {
   }, [posts, displayCount]);
 
   useEffect(() => {
+    // on change of click counter re-arrange post display
+    const additionalPosts = posts.slice(
+      (clickCounter - 1) * displayCount,
+      clickCounter * displayCount
+    );
+    setPostsDisplay(postsDisplay.concat(additionalPosts));
+  }, [clickCounter]);
+
+  useEffect(() => {
     // Make call for selected data
     if (selectedPostId) {
       const loadData = async () => {
@@ -73,7 +83,15 @@ const Blog: React.FC = (): JSX.Element => {
   };
 
   const loadMore = () => {
-    setDisplayCount(displayCount + 4);
+    // incrememnt value
+    setClickCounter(clickCounter + 1);
+  };
+
+  const checkDelete = (id: number) => {
+    if (id) {
+      // remove deleted id from display
+      setPostsDisplay(postsDisplay.filter((i) => i.id !== id));
+    }
   };
 
   return (
@@ -113,11 +131,14 @@ const Blog: React.FC = (): JSX.Element => {
         </Col>
       </Row>
       <Row>
-        <FullPost
-          id={selectedPostId}
-          loadedPost={loadedPost}
-          loading={loading}
-        />
+        <Col xs={12}>
+          <FullPost
+            id={selectedPostId}
+            loadedPost={loadedPost}
+            loading={loading}
+            deleteOperation={(id: number) => checkDelete(id)}
+          />
+        </Col>
       </Row>
       <Row>{/* <NewPost /> */}</Row>
     </Container>
