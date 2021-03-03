@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import { PostDataObj, NotificationType, URL } from '../../types/post/data';
+import { PostDataObj, NotificationType, URL } from '../../types/article/data';
 
 export interface FullPostProps {
   id: number | undefined;

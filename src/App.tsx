@@ -1,14 +1,18 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import { Provider } from 'react-redux';
 import Blog from './container/Blog';
 import ThemeWrapper from './utils/ThemeWrapper';
+import store, { persistor } from './store';
 
 function App() {
   return (
     <ThemeWrapper>
-      <Container title="mainDiv">
-        <Blog />
-      </Container>
+      <Provider store={store}>
+        <Container title="mainDiv">
+          <Blog />
+        </Container>
+      </Provider>
     </ThemeWrapper>
   );
 }

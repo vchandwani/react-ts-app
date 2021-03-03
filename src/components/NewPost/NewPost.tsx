@@ -23,7 +23,9 @@ import {
   NotificationType,
   Values,
   URL,
-} from '../../types/post/data';
+  AUTHOR,
+  USERID,
+} from '../../types/article/data';
 import { ArticleSchema } from '../../lib/validation/article';
 import BackDrop from '../BackDrop/BackDrop';
 
@@ -60,8 +62,8 @@ const useStyles = makeStyles((theme) => ({
 
 const NewPost = (preFilledData?: PostDataObj): JSX.Element => {
   const initialValues: PostDataObj = {
-    userId: 1,
-    author: 'Varun',
+    userId: USERID,
+    author: AUTHOR,
     title: '',
     body: '',
   };
@@ -82,7 +84,7 @@ const NewPost = (preFilledData?: PostDataObj): JSX.Element => {
   const styles = useStyles();
 
   const refreshData = () => {
-    setPostData({ title: '', body: '', author: 'Varun', userId: 1 });
+    setPostData({ title: '', body: '', author: AUTHOR, userId: USERID });
   };
 
   useEffect(() => {
@@ -247,7 +249,7 @@ const NewPost = (preFilledData?: PostDataObj): JSX.Element => {
                         fullWidth
                         error={meta.touched && meta.error !== undefined}
                       >
-                        <MenuItem value="Varun">Varun</MenuItem>
+                        <MenuItem value={AUTHOR}>{AUTHOR}</MenuItem>
                         <MenuItem value="Unknown">Unknown</MenuItem>
                       </Select>
                     )}

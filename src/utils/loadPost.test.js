@@ -1,6 +1,6 @@
 import { loadPost } from './loadPost';
 import { server, rest } from '../testServer';
-import { URL } from '../types/post/data';
+import { URL } from '../types/article/data';
 
 test('Check loadPost api get call with correct data', async () => {
   const loadPostData = await loadPost(1);

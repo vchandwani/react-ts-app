@@ -20,3 +20,6 @@ export type Values = Record<
 >;
 
 export const URL = 'https://jsonplaceholder.typicode.com/posts';
+
+export const AUTHOR = 'Varun';
+export const USERID = 1;

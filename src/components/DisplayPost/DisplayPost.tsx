@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
 import FullPost from '../FullPost/FullPost';
 import { loadPost } from '../../utils/loadPost';
-import { PostDataObj, URL } from '../../types/post/data';
+import { PostDataObj, URL, AUTHOR } from '../../types/article/data';
 import BackDrop from '../BackDrop/BackDrop';
+import { loadArticles } from '../../store/modules/articles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   loadMoreDiv: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const DisplayPost: React.FC = (): JSX.Element => {
   const styles = useStyles({});
+  const dispatch = useDispatch();
 
   const [posts, setPosts] = useState<Array<PostDataObj>>([]);
   const [postsDisplay, setPostsDisplay] = useState<Array<PostDataObj>>([]);
@@ -40,12 +43,13 @@ const DisplayPost: React.FC = (): JSX.Element => {
       const postsResponse = response.data;
       const updatedPosts = postsResponse.map((post: PostDataObj) => ({
         ...post,
-        author: 'Varun',
+        author: AUTHOR,
       }));
       setPosts(updatedPosts);
       setLoading(false);
       // console.log( response );
     });
+    dispatch(loadArticles(URL));
   }, []);
 
   useEffect(() => {
