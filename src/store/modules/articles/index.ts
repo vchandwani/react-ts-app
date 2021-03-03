@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../../lib/api';
+// eslint-disable-next-line import/no-cycle
 import { AppThunk } from '../../../types';
 import { PostDataObj } from '../../../types/article/data';
+// eslint-disable-next-line import/no-cycle
 import { AppDispatch } from '../../index';
 
 export interface ArticlesState {
@@ -36,6 +38,8 @@ const articles = createSlice({
       state.isLoading = true;
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = false;
+      // eslint-disable-next-line no-param-reassign
+      state.error = undefined;
     },
 
     // Documents loaded

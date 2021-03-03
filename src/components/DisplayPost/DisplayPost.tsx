@@ -6,9 +6,16 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
 import FullPost from '../FullPost/FullPost';
 import { loadPost } from '../../utils/loadPost';
-import { PostDataObj, URL, AUTHOR } from '../../types/article/data';
+import {
+  PostDataObj,
+  URL,
+  AUTHOR,
+  NotificationType,
+} from '../../types/article/data';
 import BackDrop from '../BackDrop/BackDrop';
-import { loadArticles } from '../../store/modules/articles';
+import Notification from '../Notification/Notification';
+import { loadArticles, clearResults } from '../../store/modules/articles';
+import { RootState } from '../../store/reducers';
 
 const useStyles = makeStyles((theme: Theme) => ({
   loadMoreDiv: {
@@ -24,8 +31,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 const DisplayPost: React.FC = (): JSX.Element => {
   const styles = useStyles({});
   const dispatch = useDispatch();
-
-  const [posts, setPosts] = useState<Array<PostDataObj>>([]);
   const [postsDisplay, setPostsDisplay] = useState<Array<PostDataObj>>([]);
   const [selectedPostId, setSelectedPostId] = useState<number | undefined>(
     undefined
@@ -35,30 +40,23 @@ const DisplayPost: React.FC = (): JSX.Element => {
   const [loadedPost, setLoadedPost] = useState<PostDataObj | undefined>(
     undefined
   );
-  const [loading, setLoading] = useState<boolean>(false);
 
+  const { articles, error, isLoaded, isLoading } = useSelector(
+    (state: RootState) => state.articles
+  );
+  console.log(error);
   useEffect(() => {
-    setLoading(true);
-    axios.get(URL).then((response) => {
-      const postsResponse = response.data;
-      const updatedPosts = postsResponse.map((post: PostDataObj) => ({
-        ...post,
-        author: AUTHOR,
-      }));
-      setPosts(updatedPosts);
-      setLoading(false);
-      // console.log( response );
-    });
+    dispatch(clearResults());
     dispatch(loadArticles(URL));
   }, []);
 
   useEffect(() => {
-    setPostsDisplay(posts.slice(0, displayCount));
-  }, [posts, displayCount]);
+    setPostsDisplay(articles.slice(0, displayCount));
+  }, [articles]);
 
   useEffect(() => {
     // on change of click counter re-arrange post display
-    const additionalPosts = posts.slice(
+    const additionalPosts = articles.slice(
       (clickCounter - 1) * displayCount,
       clickCounter * displayCount
     );
@@ -70,14 +68,12 @@ const DisplayPost: React.FC = (): JSX.Element => {
     if (selectedPostId) {
       const loadData = async () => {
         if (!loadedPost || (loadedPost && loadedPost.id !== selectedPostId)) {
-          setLoading(true);
           const data = await loadPost(selectedPostId);
           if (data) {
             setLoadedPost(data);
           } else {
             setLoadedPost(undefined);
           }
-          setLoading(false);
         }
       };
       loadData();
@@ -101,9 +97,16 @@ const DisplayPost: React.FC = (): JSX.Element => {
   };
   return (
     <>
-      <BackDrop open={loading} />
+      <BackDrop open={isLoading} />
+      {error && (
+        <Notification
+          open={true}
+          notificationType={NotificationType.ERROR}
+          notificationMsg={error}
+        />
+      )}
 
-      {postsDisplay && (
+      {isLoaded && postsDisplay && (
         <Row>
           {postsDisplay.map((post: PostDataObj, index: number) => (
             <Post
@@ -134,7 +137,7 @@ const DisplayPost: React.FC = (): JSX.Element => {
           <FullPost
             id={selectedPostId}
             loadedPost={loadedPost}
-            loading={loading}
+            loading={isLoading}
             deleteOperation={(id: number) => checkDelete(id)}
           />
         </Col>

@@ -27,20 +27,15 @@ const articles: ArticlesAPI = {
    * Load documents by type
    */
   loadArticles: async (apiResource: string): Promise<PostDataObj[]> => {
-    const url = `/${apiResource}`;
-
-    const res = await axios.get<ArticlesAPIResponse>(url);
+    const url = `${apiResource}`;
+    const res = await axios.get(url);
     const results: PostDataObj[] = [];
-    console.log('res.data');
-    console.log(res.data);
     if (res.data) {
-      console.log(res.data);
-      // res.data.foreach((value: ArticleResponseData) => {
-      //   const entry: ArticleResponseData | null = null;
-      //   if (entry) {
-      //     results.push({ ...entry, author: AUTHOR });
-      //   }
-      // });
+      res.data.forEach((element: ArticleResponseData) => {
+        if (element) {
+          results.push({ ...element, author: AUTHOR });
+        }
+      });
     }
     return results.filter((r) => r !== null);
   },

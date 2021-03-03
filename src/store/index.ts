@@ -8,6 +8,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+// eslint-disable-next-line import/no-cycle
 import rootReducer from './reducers';
 
 // Main redux store setup
