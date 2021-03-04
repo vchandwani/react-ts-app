@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'react-bootstrap';
-import axios from 'axios';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
 import FullPost from '../FullPost/FullPost';
 import { loadPost } from '../../utils/loadPost';
-import {
-  PostDataObj,
-  URL,
-  AUTHOR,
-  NotificationType,
-} from '../../types/article/data';
+import { PostDataObj, URL, NotificationType } from '../../types/article/data';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
 import { loadArticles, clearResults } from '../../store/modules/articles';
@@ -44,11 +38,11 @@ const DisplayPost: React.FC = (): JSX.Element => {
   const { articles, error, isLoaded, isLoading } = useSelector(
     (state: RootState) => state.articles
   );
-  console.log(error);
+
   useEffect(() => {
     dispatch(clearResults());
     dispatch(loadArticles(URL));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setPostsDisplay(articles.slice(0, displayCount));

@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import { Provider } from 'react-redux';
 import Blog from './container/Blog';
 import ThemeWrapper from './utils/ThemeWrapper';
-import store, { persistor } from './store';
+import store from './store';
 
 function App() {
   return (

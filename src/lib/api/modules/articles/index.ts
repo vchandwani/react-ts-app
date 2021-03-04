@@ -3,6 +3,10 @@ import { AUTHOR, PostDataObj } from '../../../../types/article/data';
 
 export interface ArticlesAPI {
   loadArticles(apiResource: string): Promise<PostDataObj[]>;
+  postArticle(
+    apiResource: string,
+    val: PostDataObj
+  ): Promise<PostArticleResult>;
 }
 
 // Format of API results
@@ -16,6 +20,16 @@ export interface ArticleResponseData {
 
 export interface ArticlesAPIResponse {
   data: ArticleResponseData[];
+}
+
+interface PostArticleAPIResponse {
+  code?: string;
+  message?: string;
+}
+
+interface PostArticleResult {
+  success: boolean;
+  message: string;
 }
 
 /**
@@ -38,6 +52,29 @@ const articles: ArticlesAPI = {
       });
     }
     return results.filter((r) => r !== null);
+  },
+  /**
+   * Post Article document
+   * @param apiResource
+   * @param val
+   */
+  postArticle: async (
+    apiResource: string,
+    val: PostDataObj
+  ): Promise<PostArticleResult> => {
+    const url = `${apiResource}`;
+    const res = await axios.post<PostArticleAPIResponse>(url, val);
+
+    if (res.status !== 201) {
+      return {
+        success: false,
+        message: res.data.message || 'Unknown error',
+      };
+    }
+    return {
+      success: true,
+      message: res.data.message || 'Success',
+    };
   },
 };
 

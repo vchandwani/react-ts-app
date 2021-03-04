@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { Col, Card, Button, Nav } from 'react-bootstrap';
 import { Grid } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
-import axios from 'axios';
-import {
-  PostDataObj,
-  URL,
-  AUTHOR,
-  NotificationType,
-} from '../../types/article/data';
+import { PostDataObj } from '../../types/article/data';
 import BackDrop from '../BackDrop/BackDrop';
+import { loadArticle, clearResults } from '../../store/modules/article';
+import { RootState } from '../../store/reducers';
 
 interface PostProps extends PostDataObj {
   clicked(): void;
@@ -50,17 +47,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Post = ({ title, author, body, clicked, id }: PostProps): JSX.Element => {
+const Post = ({
+  title,
+  author,
+  body,
+  clicked,
+  id,
+  userId,
+}: PostProps): JSX.Element => {
   const [characterLength, setCharacterLength] = useState(20);
   const [fullRead, setFullRead] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [notificationOpen, setNotificationOpen] = useState<boolean>(false);
-  const [notificationMsg, setNotificationMsg] = useState<string | null>(null);
-  const [notificationType, setNotificationType] = useState<NotificationType>(
-    NotificationType.INFO
-  );
   const styles = useStyles({});
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const { isLoaded, isLoading } = useSelector(
+    (state: RootState) => state.article
+  );
 
   const readMore = () => {
     setCharacterLength(255);
@@ -68,38 +71,15 @@ const Post = ({ title, author, body, clicked, id }: PostProps): JSX.Element => {
   };
 
   const checkEdit = (postId: number) => {
-    console.log(postId);
-    setLoading(true);
     // check valid id
-    axios
-      .get(`${URL}/${postId}`)
-      .then((response) => {
-        const postsResponse = response.data;
-        // if valid id then progress
-        console.log(postsResponse);
-        if (postsResponse.id) {
-          setLoading(false);
-          // Assign value to store
-          // redirect
-          // history.push('/newArticle');
-        } else {
-          setNotificationOpen(true);
-          setNotificationMsg('Something went wrong!');
-          setNotificationType(NotificationType.ERROR);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        setNotificationOpen(true);
-        setNotificationMsg('Something went wrong!');
-        setNotificationType(NotificationType.ERROR);
-        setLoading(false);
-      });
+    dispatch(clearResults());
+    dispatch(loadArticle({ title, author, body, id, userId }));
+    isLoaded && !isLoading && history.push('/newArticle');
   };
 
   return (
     <Col xs={12} sm={4} className="mt-1 mb-1" data-test="post-div">
-      <BackDrop open={loading} />
+      <BackDrop open={isLoading} />
       <Card
         className={[styles.postDiv, fullRead && styles.height100].join(' ')}
       >
