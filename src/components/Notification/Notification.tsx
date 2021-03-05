@@ -6,21 +6,22 @@ import Alert from '@material-ui/lab/Alert';
 import { NotificationType } from '../../types/article/data';
 
 interface NotificationProps {
-  open: boolean;
-  notificationType: NotificationType;
   notificationMsg: string;
+  open?: boolean;
+  notificationType?: NotificationType;
 }
 
-const Notification = ({
+const Notification: React.FC<NotificationProps> = ({
+  notificationMsg,
   open = false,
   notificationType = NotificationType.INFO,
-  notificationMsg,
-}: NotificationProps): JSX.Element => {
+}) => {
   const [notificationOpen, setNotificationOpen] = useState<boolean>(open);
+
   return (
-    <Row>
-      <Col xs={12}>
-        <Collapse in={notificationOpen}>
+    <Row data-testid="notificaitonDiv">
+      <Col xs={12} data-testid="notificaitonCol">
+        <Collapse in={notificationOpen} data-testid="notificaitonCollapseDiv">
           <Alert
             action={
               <IconButton
@@ -30,11 +31,13 @@ const Notification = ({
                 onClick={() => {
                   setNotificationOpen(false);
                 }}
+                data-testid="buttonIcon"
               >
-                <CloseIcon fontSize="inherit" />
+                <CloseIcon fontSize="inherit" data-testid="closeIcon" />
               </IconButton>
             }
             severity={notificationType}
+            data-testid="alertContent"
           >
             {notificationMsg}
           </Alert>
