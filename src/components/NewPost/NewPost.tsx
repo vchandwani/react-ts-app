@@ -26,7 +26,7 @@ import { ArticleSchema } from '../../lib/validation/article';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
 import { RootState } from '../../store/reducers';
-import { postArticle } from '../../store/modules/article';
+import { postArticle, clearActioned } from '../../store/modules/article';
 
 const useStyles = makeStyles((theme) => ({
   articleForm: {
@@ -75,7 +75,9 @@ const NewPost = (): JSX.Element => {
     NotificationType.INFO
   );
   const styles = useStyles();
-
+  useEffect(() => {
+    dispatch(clearActioned());
+  }, []);
   useEffect(() => {
     if (error) {
       setNotificationMsg(error);
@@ -85,9 +87,12 @@ const NewPost = (): JSX.Element => {
   }, [error]);
   useEffect(() => {
     if (actioned) {
+      console.log(clearActioned);
       setNotificationMsg(`${editable}` ? `Article edited` : `Article added`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
+    } else {
+      setNotificationOpen(false);
     }
   }, [actioned]);
 
@@ -109,7 +114,6 @@ const NewPost = (): JSX.Element => {
     body: initial.body,
     id: initial.id,
   });
-  console.log(formValues);
 
   const getUsernameEndAdornment = (
     errorMsg: string | undefined
@@ -152,6 +156,7 @@ const NewPost = (): JSX.Element => {
             initialValues={formValues}
             validationSchema={ArticleSchema}
             onSubmit={(values, actions) => {
+              setFormValues({ ...values });
               actions.setSubmitting(false);
               dispatch(postArticle(URL, values));
             }}

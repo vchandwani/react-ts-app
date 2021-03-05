@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'react-bootstrap';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
-import FullPost from '../FullPost/FullPost';
 import { loadPost } from '../../utils/loadPost';
 import { PostDataObj, URL, NotificationType } from '../../types/article/data';
 import BackDrop from '../BackDrop/BackDrop';
@@ -111,6 +110,7 @@ const DisplayPost: React.FC = (): JSX.Element => {
               id={post.id}
               userId={post.userId}
               clicked={() => postSelectedHandler(post.id)}
+              deleteOperation={(id: number) => checkDelete(id)}
             />
           ))}
         </Row>
@@ -124,16 +124,6 @@ const DisplayPost: React.FC = (): JSX.Element => {
           >
             Load More
           </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12}>
-          <FullPost
-            id={selectedPostId}
-            loadedPost={loadedPost}
-            loading={isLoading}
-            deleteOperation={(id: number) => checkDelete(id)}
-          />
         </Col>
       </Row>
     </>

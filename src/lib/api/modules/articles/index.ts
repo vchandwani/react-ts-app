@@ -7,6 +7,7 @@ export interface ArticlesAPI {
     apiResource: string,
     val: PostDataObj
   ): Promise<PostArticleResult>;
+  deleteArticle(apiResource: string): Promise<PostArticleResult>;
 }
 
 // Format of API results
@@ -66,6 +67,31 @@ const articles: ArticlesAPI = {
     const res = await axios.post<PostArticleAPIResponse>(url, val);
 
     if (res.status !== 201) {
+      return {
+        success: false,
+        message: res.data.message || 'Unknown error',
+      };
+    }
+    return {
+      success: true,
+      message: res.data.message || 'Success',
+    };
+  },
+
+  /**
+   * Delete Article document
+   * @param apiResource
+   */
+  deleteArticle: async (apiResource: string): Promise<PostArticleResult> => {
+    const url = `${apiResource}`;
+    const res = await axios.delete<PostArticleAPIResponse>(url, {
+      headers: {
+        'Content-Type': 'application/json; carset=UTF-8',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+
+    if (res.status !== 200) {
       return {
         success: false,
         message: res.data.message || 'Unknown error',

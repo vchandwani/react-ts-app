@@ -120,6 +120,51 @@ const article = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.actioned = false;
     },
+    // Clear current results
+    actionedClear(state): void {
+      // eslint-disable-next-line no-param-reassign
+      state.actioned = false;
+    },
+
+    deleteArticleStart(state): void {
+      // eslint-disable-next-line no-param-reassign
+      state.isLoading = true;
+      // eslint-disable-next-line no-param-reassign
+      state.isLoaded = false;
+      // eslint-disable-next-line no-param-reassign
+      state.error = undefined;
+      // eslint-disable-next-line no-param-reassign
+      state.actioned = false;
+    },
+
+    // Documents loaded
+    deleteArticleComplete(state): void {
+      // eslint-disable-next-line no-param-reassign
+      state.isLoaded = true;
+      // eslint-disable-next-line no-param-reassign
+      state.isLoading = false;
+      // eslint-disable-next-line no-param-reassign
+      state.article = undefined;
+      // eslint-disable-next-line no-param-reassign
+      state.error = undefined;
+      // eslint-disable-next-line no-param-reassign
+      state.actioned = true;
+    },
+
+    // articles load failed
+    deleteArticleFailed(
+      state,
+      action: PayloadAction<ArticleActionPayload>
+    ): void {
+      // eslint-disable-next-line no-param-reassign
+      state.isLoaded = true;
+      // eslint-disable-next-line no-param-reassign
+      state.isLoading = false;
+      // eslint-disable-next-line no-param-reassign
+      state.error = action.payload.error || 'Unable to delete';
+      // eslint-disable-next-line no-param-reassign
+      state.actioned = false;
+    },
   },
 });
 
@@ -132,6 +177,10 @@ export const {
   postArticleComplete,
   postArticleFailed,
   clearResults,
+  actionedClear,
+  deleteArticleStart,
+  deleteArticleComplete,
+  deleteArticleFailed,
 } = article.actions;
 
 export default article.reducer;
@@ -148,7 +197,6 @@ export const loadArticle = (data: PostDataObj): AppThunk => async (
   dispatch: AppDispatch
 ) => {
   dispatch(loadArticleStart());
-
   try {
     dispatch(loadArticleComplete(data));
   } catch (error) {
@@ -185,6 +233,50 @@ export const postArticle = (
 
     dispatch(
       postArticleFailed({
+        error: errorMessage,
+      })
+    );
+  }
+};
+
+/**
+ * Refresh Actioned
+ *
+ */
+export const clearActioned = (): AppThunk => async (dispatch: AppDispatch) => {
+  dispatch(actionedClear());
+};
+
+/**
+ * Load document results based on document type
+ *
+ * @param apiResource {String}
+ * @param id {String}
+ */
+export const deleteArticle = (
+  apiResource: string,
+  id: number
+): AppThunk => async (dispatch: AppDispatch) => {
+  dispatch(deleteArticleStart());
+
+  const url: string = `${apiResource}/`.concat(id ? id.toString() : '');
+
+  try {
+    const result = await api.articles.deleteArticle(url);
+
+    if (result.success) {
+      dispatch(deleteArticleComplete());
+    } else {
+      dispatch(deleteArticleFailed({ error: 'Operation dailed' }));
+    }
+  } catch (error) {
+    let errorMessage = error;
+    if (error && error.message) {
+      errorMessage = error.message;
+    }
+
+    dispatch(
+      deleteArticleFailed({
         error: errorMessage,
       })
     );
