@@ -5,16 +5,18 @@ import DisplayPost from '../components/DisplayPost/DisplayPost';
 import NewPost from '../components/NewPost/NewPost';
 
 const Blog: React.FC = (): JSX.Element => (
-  <Container>
+  <Container data-testid="portalContainer">
     <Router>
       <div>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <Link to="/">
-            <Navbar.Brand>Article Portal</Navbar.Brand>
+            <Navbar.Brand data-testid="portalHeader">
+              Article Portal
+            </Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="mr-auto">
+            <Nav className="mr-auto" data-testid="navigationLink">
               <Nav.Link as={Link} to="/">
                 List
               </Nav.Link>
@@ -25,12 +27,12 @@ const Blog: React.FC = (): JSX.Element => (
           </Navbar.Collapse>
         </Navbar>
         <Row>
-          <Col xs={12}>
+          <Col xs={12} data-testid="portalSubHeader">
             <h2>Articles Portal!</h2>
           </Col>
         </Row>
         <Row>
-          <Col xs={12}>
+          <Col xs={12} data-testid="portalDescription">
             <p>Articles can be added, edited and deleted</p>
           </Col>
         </Row>

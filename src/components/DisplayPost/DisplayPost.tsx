@@ -44,12 +44,12 @@ const DisplayPost: React.FC = (): JSX.Element => {
   }, [dispatch]);
 
   useEffect(() => {
-    setPostsDisplay(articles.slice(0, displayCount));
+    articles && setPostsDisplay(articles.slice(0, displayCount));
   }, [articles]);
 
   useEffect(() => {
     // on change of click counter re-arrange post display
-    const additionalPosts = articles.slice(
+    const additionalPosts = articles?.slice(
       (clickCounter - 1) * displayCount,
       clickCounter * displayCount
     );
