@@ -28,7 +28,7 @@ import {
 } from '../../store/modules/article';
 import { RootState } from '../../store/reducers';
 
-interface PostProps extends PostDataObj {
+export interface PostProps extends PostDataObj {
   clicked(): void;
   deleteOperation(id: number | undefined): void;
 }
@@ -110,7 +110,7 @@ const Post = ({
     setFullRead(true);
   };
 
-  const checkEdit = (postId: number) => {
+  const checkEdit = () => {
     // check valid id
     dispatch(clearResults());
     dispatch(loadArticle({ title, author, body, id, userId }));
@@ -131,7 +131,7 @@ const Post = ({
 
   useEffect(() => {
     if (actioned) {
-      setNotificationMsg(`Article delete`);
+      setNotificationMsg(`Article deleted`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
       deleteOperation(id);
@@ -154,38 +154,45 @@ const Post = ({
         maxWidth="md"
         fullWidth
         PaperComponent={PaperComponent}
+        data-testid="postDialogDiv"
       >
-        <BackDrop open={isLoading} />
+        <BackDrop open={isLoading} data-testid="backDropDiv" />
         <DialogContent>
           {notificationOpen && notificationMsg && (
             <Notification
               open={notificationOpen}
               notificationType={notificationType}
               notificationMsg={notificationMsg}
+              data-testid="notificaitonDiv"
             />
           )}
         </DialogContent>
         {!actioned && (
           <>
-            <DialogTitle id="alert-dialog-title">
+            <DialogTitle id="alert-dialog-title" data-testid="dialogHeader">
               Are you sure you want to continue?
             </DialogTitle>
-            <DialogContent>
+            <DialogContent data-testid="dialogTitleText">
               <Typography component="h6" variant="h6">
                 Title
               </Typography>
             </DialogContent>
-            <DialogContent>{title}</DialogContent>
-            <DialogContent>
+            <DialogContent data-testid="dialogTitle">{title}</DialogContent>
+            <DialogContent data-testid="contentTitleText">
               <Typography component="h6" variant="h6">
                 Content
               </Typography>
             </DialogContent>
-            <DialogContent>{body}</DialogContent>
+            <DialogContent data-testid="dialogBody">{body}</DialogContent>
           </>
         )}
-        <DialogActions>
-          <Button variant="contained" color="secondary" onClick={handleClose}>
+        <DialogActions data-testid="dialogAction">
+          <Button
+            data-testid="dialogCloseButton"
+            variant="contained"
+            color="secondary"
+            onClick={handleClose}
+          >
             {actioned ? 'Close' : 'Cancel'}
           </Button>
           {!actioned && (
@@ -193,6 +200,7 @@ const Post = ({
               variant="contained"
               color="primary"
               onClick={deletePostHandler}
+              data-testid="dialogDeleteButton"
             >
               Confirm
             </Button>
@@ -200,22 +208,28 @@ const Post = ({
         </DialogActions>
       </Dialog>
 
-      <Col xs={12} sm={6} md={4} className="mt-1 mb-1" data-test="post-div">
+      <Col
+        xs={12}
+        sm={6}
+        md={4}
+        className="mt-1 mb-1"
+        data-testid="postCardDiv"
+      >
         <Card
           className={[styles.postDiv, fullRead && styles.height100].join(' ')}
         >
-          <Card.Body onClick={clicked}>
-            <Card.Title data-test="post-title">
+          <Card.Body data-testid="postCard" onClick={clicked}>
+            <Card.Title data-testid="postTitle">
               {title.length > characterLength
                 ? title.substring(0, characterLength)
                 : title}
             </Card.Title>
-            <Card.Text data-test="post-content">
+            <Card.Text data-testid="postContent">
               {body.length > characterLength
                 ? body.substring(0, characterLength)
                 : body}
             </Card.Text>
-            {author && <Card.Text>{author}</Card.Text>}
+            {author && <Card.Text data-testid="postAuthor">{author}</Card.Text>}
           </Card.Body>
           <Card.Body>
             <Grid
@@ -227,7 +241,7 @@ const Post = ({
             >
               <Grid item xs={12} md={6}>
                 <Button
-                  data-test="post-button"
+                  data-testid="readMoreButton"
                   className="ReadMore"
                   variant="contained"
                   size="medium"
@@ -249,7 +263,10 @@ const Post = ({
                   alignItems="center"
                 >
                   <Grid>
-                    <Nav.Link onClick={() => checkEdit(id)}>
+                    <Nav.Link
+                      onClick={() => checkEdit()}
+                      data-testid="editLink"
+                    >
                       <EditIcon />
                     </Nav.Link>
                   </Grid>
@@ -257,6 +274,7 @@ const Post = ({
                     <DeleteIcon
                       className={styles.delete}
                       onClick={() => deleteConfirm()}
+                      data-testid="deleteLink"
                     />
                   </Grid>
                 </Grid>
