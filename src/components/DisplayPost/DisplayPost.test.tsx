@@ -179,7 +179,7 @@ describe('Post component loaded ', () => {
     fireEvent.click(postCard[0]);
   });
   test('on click of delete button of post request is sent', () => {
-    const storeSelectedPosts = mockStore({
+    const storeSelectedPost = mockStore({
       ...initialStoreData,
       post: {},
     });
