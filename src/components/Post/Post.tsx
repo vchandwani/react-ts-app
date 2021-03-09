@@ -11,7 +11,7 @@ import {
   DialogContent,
   Typography,
 } from '@material-ui/core';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper, { PaperProps } from '@material-ui/core/Paper';
@@ -99,7 +99,6 @@ const Post = ({
   const [notificationType, setNotificationType] = useState<NotificationType>(
     NotificationType.INFO
   );
-  const theme = useTheme();
 
   const { isLoaded, isLoading, actioned, error } = useSelector(
     (state: RootState) => state.post

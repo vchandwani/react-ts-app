@@ -15,14 +15,14 @@ const server = setupServer(
         },
       })
     )
-  ),
-  rest.get('*', (req, res, ctx) => {
-    console.error(`Please add request handler for ${req.url.toString()}`);
-    return res(
-      ctx.status(500),
-      ctx.json({ error: 'Please add request handler' })
-    );
-  })
+  )
+  // rest.get('*', (req, res, ctx) => {
+  //   console.error(`Please add request handler for ${req.url.toString()}`);
+  //   return res(
+  //     ctx.status(500),
+  //     ctx.json({ error: 'Please add request handler' })
+  //   );
+  // })
 );
 
 beforeAll(() => server.listen());

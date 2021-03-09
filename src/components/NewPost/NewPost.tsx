@@ -131,27 +131,30 @@ const NewPost = (): JSX.Element => {
   };
   return (
     <>
-      <BackDrop open={isLoading} />
+      <BackDrop open={isLoading} data-testid="backDropDiv" />
       {notificationOpen && notificationMsg && (
         <Notification
+          data-testid="notificationDiv"
           open={notificationOpen}
           notificationType={notificationType}
           notificationMsg={notificationMsg}
         />
       )}
-      <Grid item xs={12}>
+      <Grid item xs={12} data-testid="postFormDiv">
         <Row className="mt-1 mb-1">
           <Col xs={12}>
-            <Typography variant="h5">
+            <Typography variant="h5" data-testid="postFormHeader">
               {editable ? 'Edit' : 'Add'} Post
             </Typography>
           </Col>
         </Row>
       </Grid>
       {isLoaded && (
-        <Col className={(styles.newPost, styles.postForm)}>
+        <Col
+          className={(styles.newPost, styles.postForm)}
+          data-testid="postFormContainer"
+        >
           <Formik
-            data-testid="postForm-container"
             initialValues={formValues}
             validationSchema={PostSchema}
             onSubmit={(values, actions) => {
@@ -173,7 +176,7 @@ const NewPost = (): JSX.Element => {
                     <Field name="title" type="text">
                       {({ field, form, meta }: FieldProps) => (
                         <TextField
-                          data-testid="form-title-field"
+                          data-testid="postFormTitleField"
                           {...field}
                           variant="filled"
                           fullWidth
@@ -202,7 +205,7 @@ const NewPost = (): JSX.Element => {
                         <TextField
                           multiline
                           rowsMax={4}
-                          data-testid="form-body-field"
+                          data-testid="postFormBodyField"
                           {...field}
                           variant="filled"
                           fullWidth
@@ -222,7 +225,7 @@ const NewPost = (): JSX.Element => {
                       {({ field, form, meta }: FieldProps) => (
                         <Select
                           {...field}
-                          data-testid="form-author-field"
+                          data-testid="postFormAuthorField"
                           id="author"
                           variant="filled"
                           fullWidth
@@ -244,7 +247,7 @@ const NewPost = (): JSX.Element => {
                   >
                     <Grid item xs={12} sm={3}>
                       <Button
-                        data-testid="loginForm-back"
+                        data-testid="postFormBackButton"
                         variant="contained"
                         color="secondary"
                         fullWidth
@@ -256,7 +259,7 @@ const NewPost = (): JSX.Element => {
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <Button
-                        data-testid="loginForm-submit"
+                        data-testid="postFormSubmitButton"
                         type="submit"
                         variant="contained"
                         color="primary"
