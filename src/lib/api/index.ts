@@ -1,5 +1,5 @@
-import articles from './modules/articles';
+import posts from './modules/posts';
 
 export default {
-  articles,
+  posts,
 };

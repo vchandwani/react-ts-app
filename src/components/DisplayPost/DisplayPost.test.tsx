@@ -9,17 +9,17 @@ afterEach(cleanup);
 
 const mockStore = configureStore([thunk]);
 const initialStoreData = {
-  article: {
+  post: {
     isLoading: false,
     isLoaded: true,
     actioned: false,
     error: undefined,
   },
-  articles: {
+  posts: {
     isLoading: false,
     isLoaded: true,
     error: undefined,
-    articles: [
+    posts: [
       {
         userId: 1,
         id: 1,
@@ -111,8 +111,8 @@ describe('Post component loaded ', () => {
   test('display post is in loading state', () => {
     const storeLoading = mockStore({
       ...initialStoreData,
-      articles: {
-        articles: [{ ...initialStoreData.articles.articles }],
+      posts: {
+        posts: [{ ...initialStoreData.posts.posts }],
         isLoading: true,
         isLoaded: false,
         error: undefined,
@@ -127,8 +127,8 @@ describe('Post component loaded ', () => {
   test('display post is in error state', () => {
     const storeError = mockStore({
       ...initialStoreData,
-      articles: {
-        articles: [{ ...initialStoreData.articles.articles }],
+      posts: {
+        posts: [{ ...initialStoreData.posts.posts }],
         isLoading: false,
         isLoaded: true,
         error: 'Error displayed',
@@ -142,14 +142,14 @@ describe('Post component loaded ', () => {
   });
 
   test('display post component without any post rendered', () => {
-    const storeEmptyArticles = mockStore({
+    const storeEmptyPosts = mockStore({
       ...initialStoreData,
-      articles: {
-        ...initialStoreData.articles,
-        articles: [],
+      posts: {
+        ...initialStoreData.posts,
+        posts: [],
       },
     });
-    wrapper = setup(storeEmptyArticles);
+    wrapper = setup(storeEmptyPosts);
     const { getByTestId, queryByTestId } = render(wrapper);
     const postDataDiv = getByTestId('postDataDiv');
     expect(postDataDiv).toBeTruthy();
@@ -179,11 +179,11 @@ describe('Post component loaded ', () => {
     fireEvent.click(postCard[0]);
   });
   test('on click of delete button of post request is sent', () => {
-    const storeSelectedArticle = mockStore({
+    const storeSelectedPosts = mockStore({
       ...initialStoreData,
-      article: {},
+      post: {},
     });
-    wrapper = setup(storeSelectedArticle);
+    wrapper = setup(storeSelectedPost);
     const { getByTestId, getAllByTestId, rerender } = render(wrapper);
     const postCardDiv = getAllByTestId('postCardDiv');
     expect(postCardDiv[0]).toBeTruthy();

@@ -2,38 +2,38 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../../lib/api';
 // eslint-disable-next-line import/no-cycle
 import { AppThunk } from '../../../types';
-import { PostDataObj } from '../../../types/article/data';
+import { PostDataObj } from '../../../types/post/data';
 // eslint-disable-next-line import/no-cycle
 import { AppDispatch } from '../../index';
 
-export interface ArticlesState {
+export interface PostsState {
   isLoading: boolean;
   isLoaded: boolean;
   error: string | undefined;
-  articles: PostDataObj[];
+  posts: PostDataObj[];
 }
 
-export interface ArticlesActionPayload {
+export interface PostsActionPayload {
   results?: PostDataObj[] | undefined;
   error?: string | undefined;
 }
 
-export const initialState: ArticlesState = {
+export const initialState: PostsState = {
   isLoading: false,
   isLoaded: false,
   error: undefined,
-  articles: [],
+  posts: [],
 };
 
 //
-// Articles redux module
+// posts redux module
 //
-const articles = createSlice({
-  name: 'articles',
+const posts = createSlice({
+  name: 'posts',
   initialState,
   reducers: {
     // Start loading documents
-    loadArticlesStart(state): void {
+    loadPostsStart(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoading = true;
       // eslint-disable-next-line no-param-reassign
@@ -43,9 +43,9 @@ const articles = createSlice({
     },
 
     // Documents loaded
-    loadArticlesComplete(
+    loadPostsComplete(
       state,
-      { payload }: PayloadAction<ArticlesActionPayload>
+      { payload }: PayloadAction<PostsActionPayload>
     ): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
@@ -54,15 +54,12 @@ const articles = createSlice({
 
       if (payload.results) {
         // eslint-disable-next-line no-param-reassign
-        state.articles = payload.results;
+        state.posts = payload.results;
       }
     },
 
-    // articles load failed
-    loadArticlesFailed(
-      state,
-      action: PayloadAction<ArticlesActionPayload>
-    ): void {
+    // Posts load failed
+    loadPostsFailed(state, action: PayloadAction<PostsActionPayload>): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = false;
       // eslint-disable-next-line no-param-reassign
@@ -81,13 +78,13 @@ const articles = createSlice({
 
 // Export actions and reducer
 export const {
-  loadArticlesStart,
-  loadArticlesComplete,
-  loadArticlesFailed,
+  loadPostsStart,
+  loadPostsComplete,
+  loadPostsFailed,
   clearResults,
-} = articles.actions;
+} = posts.actions;
 
-export default articles.reducer;
+export default posts.reducer;
 
 // Async actions
 
@@ -97,15 +94,15 @@ export default articles.reducer;
  * @param apiResource {String}
  * @param documentType {String}
  */
-export const loadArticles = (apiResource: string): AppThunk => async (
+export const loadPosts = (apiResource: string): AppThunk => async (
   dispatch: AppDispatch
 ) => {
-  dispatch(loadArticlesStart());
+  dispatch(loadPostsStart());
 
   try {
-    const results = await api.articles.loadArticles(apiResource);
+    const results = await api.posts.loadPosts(apiResource);
     dispatch(
-      loadArticlesComplete({
+      loadPostsComplete({
         results,
       })
     );
@@ -116,7 +113,7 @@ export const loadArticles = (apiResource: string): AppThunk => async (
     }
 
     dispatch(
-      loadArticlesFailed({
+      loadPostsFailed({
         error: errorMessage,
       })
     );

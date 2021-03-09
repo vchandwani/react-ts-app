@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import articleReducer from './modules/article';
+import postReducer from './modules/post';
 // eslint-disable-next-line import/no-cycle
-import articlesReducer from './modules/articles';
+import postsReducer from './modules/posts';
 
 const rootReducer = combineReducers({
-  articles: articlesReducer,
-  article: articleReducer,
+  posts: postsReducer,
+  post: postReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

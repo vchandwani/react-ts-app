@@ -3,23 +3,23 @@ import { fireEvent, render, cleanup, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { AUTHOR, USERID } from '../../types/article/data';
+import { AUTHOR, USERID } from '../../types/post/data';
 import Post, { PostProps } from './Post';
 
 afterEach(cleanup);
 
 const mockStore = configureStore([thunk]);
 const store = mockStore({
-  article: {
+  post: {
     isLoading: false,
     isLoaded: true,
     actioned: false,
     error: undefined,
   },
-  articles: {
+  posts: {
     isLoading: false,
     isLoaded: true,
-    articles: [
+    posts: [
       {
         userId: 1,
         id: 1,
@@ -157,7 +157,7 @@ describe('Post component loaded ', () => {
   test('after click of delete icon and loading is visible', () => {
     const storeLoading = mockStore({
       ...store,
-      article: {
+      post: {
         isLoading: true,
         isLoaded: false,
         actioned: false,
@@ -195,7 +195,7 @@ describe('Post component loaded ', () => {
     const editLink = getByTestId('editLink');
     expect(editLink).toBeTruthy();
     await waitFor(() => fireEvent.click(editLink));
-    expect(mockHistoryPush.mock.calls[0][0]).toBe(`/newArticle`);
+    expect(mockHistoryPush.mock.calls[0][0]).toBe(`/newPost`);
   });
 
   test('On click of edit button correct history push is called', async () => {
@@ -203,13 +203,13 @@ describe('Post component loaded ', () => {
     const editLink = getByTestId('editLink');
     expect(editLink).toBeTruthy();
     await waitFor(() => fireEvent.click(editLink));
-    expect(mockHistoryPush.mock.calls[0][0]).toBe(`/newArticle`);
+    expect(mockHistoryPush.mock.calls[0][0]).toBe(`/newPost`);
   });
 
   test('On actioned success close button is visible', async () => {
     const storeActioned = mockStore({
       ...store,
-      article: {
+      post: {
         isLoading: false,
         isLoaded: false,
         actioned: true,
@@ -226,13 +226,13 @@ describe('Post component loaded ', () => {
     expect(dialogCloseButton.innerHTML).toContain('Close');
     const notificationDiv = getByTestId('notificationDiv');
     expect(notificationDiv).toBeTruthy();
-    expect(notificationDiv.innerHTML).toContain('Article deleted');
+    expect(notificationDiv.innerHTML).toContain('Post deleted');
   });
 
   test('On action error, error notitification is displayed ', async () => {
     const storeError = mockStore({
       ...store,
-      article: {
+      post: {
         isLoading: false,
         isLoaded: false,
         actioned: false,

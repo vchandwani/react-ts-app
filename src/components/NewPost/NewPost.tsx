@@ -21,15 +21,15 @@ import {
   URL,
   AUTHOR,
   USERID,
-} from '../../types/article/data';
-import { ArticleSchema } from '../../lib/validation/article';
+} from '../../types/post/data';
+import { PostSchema } from '../../lib/validation/post';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
 import { RootState } from '../../store/reducers';
-import { postArticle, clearActioned } from '../../store/modules/article';
+import { postPost, clearActioned } from '../../store/modules/post';
 
 const useStyles = makeStyles((theme) => ({
-  articleForm: {
+  postForm: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -60,11 +60,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NewPost = (): JSX.Element => {
-  const { article, isLoaded, isLoading, error, actioned } = useSelector(
-    (state: RootState) => state.article
+  const { post, isLoaded, isLoading, error, actioned } = useSelector(
+    (state: RootState) => state.post
   );
 
-  const editable: boolean = !!article?.id;
+  const editable: boolean = !!post?.id;
 
   const [notificationOpen, setNotificationOpen] = useState<boolean>(false);
   const history = useHistory();
@@ -77,7 +77,7 @@ const NewPost = (): JSX.Element => {
   const styles = useStyles();
   useEffect(() => {
     dispatch(clearActioned());
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     if (error) {
       setNotificationMsg(error);
@@ -87,24 +87,23 @@ const NewPost = (): JSX.Element => {
   }, [error]);
   useEffect(() => {
     if (actioned) {
-      console.log(clearActioned);
-      setNotificationMsg(`${editable}` ? `Article edited` : `Article added`);
+      setNotificationMsg(`${editable}` ? `Post edited` : `Post added`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
     } else {
       setNotificationOpen(false);
     }
-  }, [actioned]);
+  }, [actioned, editable]);
 
   const initial: PostDataObj = useMemo(
     () => ({
-      userId: article?.userId || USERID,
-      author: article?.author || AUTHOR,
-      title: article?.title || '',
-      body: article?.body || '',
-      id: article?.id || undefined,
+      userId: post?.userId || USERID,
+      author: post?.author || AUTHOR,
+      title: post?.title || '',
+      body: post?.body || '',
+      id: post?.id || undefined,
     }),
-    [article]
+    [post]
   );
 
   const [formValues, setFormValues] = useState<PostDataObj>({
@@ -144,21 +143,21 @@ const NewPost = (): JSX.Element => {
         <Row className="mt-1 mb-1">
           <Col xs={12}>
             <Typography variant="h5">
-              {editable ? 'Edit' : 'Add'} Article
+              {editable ? 'Edit' : 'Add'} Post
             </Typography>
           </Col>
         </Row>
       </Grid>
       {isLoaded && (
-        <Col className={(styles.newPost, styles.articleForm)}>
+        <Col className={(styles.newPost, styles.postForm)}>
           <Formik
-            data-testid="articleForm-container"
+            data-testid="postForm-container"
             initialValues={formValues}
-            validationSchema={ArticleSchema}
+            validationSchema={PostSchema}
             onSubmit={(values, actions) => {
               setFormValues({ ...values });
               actions.setSubmitting(false);
-              dispatch(postArticle(URL, values));
+              dispatch(postPost(URL, values));
             }}
             // {/* enableReinitialize={true} */}
           >

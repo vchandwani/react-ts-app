@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, cleanup } from '@testing-library/react';
 import Notification from './Notification';
-import { NotificationType } from '../../types/article/data';
+import { NotificationType } from '../../types/post/data';
 
 afterEach(cleanup);
 

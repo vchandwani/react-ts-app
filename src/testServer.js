@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { URL } from './types/article/data';
+import { URL } from './types/post/data';
 
 const server = setupServer(
   rest.get(`${URL}/1`, (req, res, ctx) =>

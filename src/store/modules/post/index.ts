@@ -1,41 +1,41 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { AppThunk } from '../../../types';
-import { PostDataObj } from '../../../types/article/data';
+import { PostDataObj } from '../../../types/post/data';
 // eslint-disable-next-line import/no-cycle
 import { AppDispatch } from '../../index';
 import api from '../../../lib/api';
 
-export interface ArticleState {
+export interface PostState {
   isLoading: boolean;
   isLoaded: boolean;
   error: string | undefined;
-  article: PostDataObj | undefined;
+  post: PostDataObj | undefined;
   actioned?: boolean;
 }
 
-export const initialState: ArticleState = {
+export const initialState: PostState = {
   isLoading: false,
   isLoaded: true,
   error: undefined,
-  article: undefined,
+  post: undefined,
   actioned: false,
 };
 
-export interface ArticleActionPayload {
+export interface PostActionPayload {
   results?: PostDataObj[] | undefined;
   error?: string | undefined;
 }
 
 //
-// Articles redux module
+// post redux module
 //
-const article = createSlice({
-  name: 'article',
+const post = createSlice({
+  name: 'post',
   initialState,
   reducers: {
     // Start loading documents
-    loadArticleStart(state): void {
+    loadPostStart(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoading = true;
       // eslint-disable-next-line no-param-reassign
@@ -45,7 +45,7 @@ const article = createSlice({
     },
 
     // Documents loaded
-    loadArticleComplete(state, { payload }: PayloadAction<PostDataObj>): void {
+    loadPostComplete(state, { payload }: PayloadAction<PostDataObj>): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
@@ -53,12 +53,12 @@ const article = createSlice({
 
       if (payload.id) {
         // eslint-disable-next-line no-param-reassign
-        state.article = { ...payload };
+        state.post = { ...payload };
       }
     },
 
-    // articles load failed
-    loadArticleFailed(state): void {
+    // posts load failed
+    loadPostFailed(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
@@ -70,7 +70,7 @@ const article = createSlice({
     // Clear current results
     clearResults(state): void {
       // eslint-disable-next-line no-param-reassign
-      state.article = undefined;
+      state.post = undefined;
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
@@ -81,7 +81,7 @@ const article = createSlice({
       state.actioned = false;
     },
 
-    postArticleStart(state): void {
+    postPostStart(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoading = true;
       // eslint-disable-next-line no-param-reassign
@@ -93,24 +93,21 @@ const article = createSlice({
     },
 
     // Documents loaded
-    postArticleComplete(state): void {
+    postPostComplete(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
       state.isLoading = false;
       // eslint-disable-next-line no-param-reassign
-      state.article = undefined;
+      state.post = undefined;
       // eslint-disable-next-line no-param-reassign
       state.error = undefined;
       // eslint-disable-next-line no-param-reassign
       state.actioned = true;
     },
 
-    // articles load failed
-    postArticleFailed(
-      state,
-      action: PayloadAction<ArticleActionPayload>
-    ): void {
+    // posts load failed
+    postPostFailed(state, action: PayloadAction<PostActionPayload>): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
@@ -126,7 +123,7 @@ const article = createSlice({
       state.actioned = false;
     },
 
-    deleteArticleStart(state): void {
+    deletePostStart(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoading = true;
       // eslint-disable-next-line no-param-reassign
@@ -138,24 +135,21 @@ const article = createSlice({
     },
 
     // Documents loaded
-    deleteArticleComplete(state): void {
+    deletePostComplete(state): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
       state.isLoading = false;
       // eslint-disable-next-line no-param-reassign
-      state.article = undefined;
+      state.post = undefined;
       // eslint-disable-next-line no-param-reassign
       state.error = undefined;
       // eslint-disable-next-line no-param-reassign
       state.actioned = true;
     },
 
-    // articles load failed
-    deleteArticleFailed(
-      state,
-      action: PayloadAction<ArticleActionPayload>
-    ): void {
+    // posts load failed
+    deletePostFailed(state, action: PayloadAction<PostActionPayload>): void {
       // eslint-disable-next-line no-param-reassign
       state.isLoaded = true;
       // eslint-disable-next-line no-param-reassign
@@ -170,20 +164,20 @@ const article = createSlice({
 
 // Export actions and reducer
 export const {
-  loadArticleStart,
-  loadArticleComplete,
-  loadArticleFailed,
-  postArticleStart,
-  postArticleComplete,
-  postArticleFailed,
+  loadPostStart,
+  loadPostComplete,
+  loadPostFailed,
+  postPostStart,
+  postPostComplete,
+  postPostFailed,
   clearResults,
   actionedClear,
-  deleteArticleStart,
-  deleteArticleComplete,
-  deleteArticleFailed,
-} = article.actions;
+  deletePostStart,
+  deletePostComplete,
+  deletePostFailed,
+} = post.actions;
 
-export default article.reducer;
+export default post.reducer;
 
 // Async actions
 
@@ -193,14 +187,14 @@ export default article.reducer;
  * @param apiResource {String}
  * @param documentType {String}
  */
-export const loadArticle = (data: PostDataObj): AppThunk => async (
+export const loadPost = (data: PostDataObj): AppThunk => async (
   dispatch: AppDispatch
 ) => {
-  dispatch(loadArticleStart());
+  dispatch(loadPostStart());
   try {
-    dispatch(loadArticleComplete(data));
+    dispatch(loadPostComplete(data));
   } catch (error) {
-    dispatch(loadArticleFailed());
+    dispatch(loadPostFailed());
   }
 };
 
@@ -212,18 +206,18 @@ export const loadArticle = (data: PostDataObj): AppThunk => async (
  * @param apiResource {String}
  * @param documentType {String}
  */
-export const postArticle = (
+export const postPost = (
   apiResource: string,
   val: PostDataObj
 ): AppThunk => async (dispatch: AppDispatch) => {
-  dispatch(postArticleStart());
+  dispatch(postPostStart());
 
   try {
-    const result = await api.articles.postArticle(apiResource, val);
+    const result = await api.posts.postPost(apiResource, val);
     if (result.success) {
-      dispatch(postArticleComplete());
+      dispatch(postPostComplete());
     } else {
-      dispatch(postArticleFailed({ error: 'Operation dailed' }));
+      dispatch(postPostFailed({ error: 'Operation dailed' }));
     }
   } catch (error) {
     let errorMessage = error;
@@ -232,7 +226,7 @@ export const postArticle = (
     }
 
     dispatch(
-      postArticleFailed({
+      postPostFailed({
         error: errorMessage,
       })
     );
@@ -253,21 +247,20 @@ export const clearActioned = (): AppThunk => async (dispatch: AppDispatch) => {
  * @param apiResource {String}
  * @param id {String}
  */
-export const deleteArticle = (
-  apiResource: string,
-  id: number
-): AppThunk => async (dispatch: AppDispatch) => {
-  dispatch(deleteArticleStart());
+export const deletePost = (apiResource: string, id: number): AppThunk => async (
+  dispatch: AppDispatch
+) => {
+  dispatch(deletePostStart());
 
   const url: string = `${apiResource}/`.concat(id ? id.toString() : '');
 
   try {
-    const result = await api.articles.deleteArticle(url);
+    const result = await api.posts.deletePost(url);
 
     if (result.success) {
-      dispatch(deleteArticleComplete());
+      dispatch(deletePostComplete());
     } else {
-      dispatch(deleteArticleFailed({ error: 'Operation dailed' }));
+      dispatch(deletePostFailed({ error: 'Operation dailed' }));
     }
   } catch (error) {
     let errorMessage = error;
@@ -276,7 +269,7 @@ export const deleteArticle = (
     }
 
     dispatch(
-      deleteArticleFailed({
+      deletePostFailed({
         error: errorMessage,
       })
     );

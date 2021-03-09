@@ -1,34 +1,31 @@
 import axios from 'axios';
-import { AUTHOR, PostDataObj } from '../../../../types/article/data';
+import { AUTHOR, PostDataObj } from '../../../../types/post/data';
 
-export interface ArticlesAPI {
-  loadArticles(apiResource: string): Promise<PostDataObj[]>;
-  postArticle(
-    apiResource: string,
-    val: PostDataObj
-  ): Promise<PostArticleResult>;
-  deleteArticle(apiResource: string): Promise<PostArticleResult>;
+export interface PostsAPI {
+  loadPosts(apiResource: string): Promise<PostDataObj[]>;
+  postPost(apiResource: string, val: PostDataObj): Promise<PostPostResult>;
+  deletePost(apiResource: string): Promise<PostPostResult>;
 }
 
 // Format of API results
 
-export interface ArticleResponseData {
+export interface PostResponseData {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-export interface ArticlesAPIResponse {
-  data: ArticleResponseData[];
+export interface PostsAPIResponse {
+  data: PostResponseData[];
 }
 
-interface PostArticleAPIResponse {
+interface PostPostAPIResponse {
   code?: string;
   message?: string;
 }
 
-interface PostArticleResult {
+interface PostPostResult {
   success: boolean;
   message: string;
 }
@@ -37,16 +34,16 @@ interface PostArticleResult {
  * Documents API
  */
 
-const articles: ArticlesAPI = {
+const posts: PostsAPI = {
   /**
    * Load documents by type
    */
-  loadArticles: async (apiResource: string): Promise<PostDataObj[]> => {
+  loadPosts: async (apiResource: string): Promise<PostDataObj[]> => {
     const url = `${apiResource}`;
     const res = await axios.get(url);
     const results: PostDataObj[] = [];
     if (res.data) {
-      res.data.forEach((element: ArticleResponseData) => {
+      res.data.forEach((element: PostResponseData) => {
         if (element) {
           results.push({ ...element, author: AUTHOR });
         }
@@ -55,16 +52,16 @@ const articles: ArticlesAPI = {
     return results.filter((r) => r !== null);
   },
   /**
-   * Post Article document
+   * Post Post document
    * @param apiResource
    * @param val
    */
-  postArticle: async (
+  postPost: async (
     apiResource: string,
     val: PostDataObj
-  ): Promise<PostArticleResult> => {
+  ): Promise<PostPostResult> => {
     const url = `${apiResource}`;
-    const res = await axios.post<PostArticleAPIResponse>(url, val);
+    const res = await axios.post<PostPostAPIResponse>(url, val);
 
     if (res.status !== 201) {
       return {
@@ -79,12 +76,12 @@ const articles: ArticlesAPI = {
   },
 
   /**
-   * Delete Article document
+   * Delete post document
    * @param apiResource
    */
-  deleteArticle: async (apiResource: string): Promise<PostArticleResult> => {
+  deletePost: async (apiResource: string): Promise<PostPostResult> => {
     const url = `${apiResource}`;
-    const res = await axios.delete<PostArticleAPIResponse>(url, {
+    const res = await axios.delete<PostPostAPIResponse>(url, {
       headers: {
         'Content-Type': 'application/json; carset=UTF-8',
         'Access-Control-Allow-Origin': '*',
@@ -104,4 +101,4 @@ const articles: ArticlesAPI = {
   },
 };
 
-export default articles;
+export default posts;

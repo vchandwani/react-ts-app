@@ -3,7 +3,7 @@ import { Col, Row } from 'react-bootstrap';
 import { Collapse, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Alert from '@material-ui/lab/Alert';
-import { NotificationType } from '../../types/article/data';
+import { NotificationType } from '../../types/post/data';
 
 interface NotificationProps {
   notificationMsg: string;

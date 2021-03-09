@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URL } from '../types/article/data';
+import { URL } from '../types/post/data';
 
 async function loadPost(id) {
   try {

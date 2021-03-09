@@ -7,13 +7,13 @@ import Blog from './Blog';
 
 const mockStore = configureStore([thunk]);
 const store = mockStore({
-  article: {
+  post: {
     isLoading: false,
     isLoaded: true,
     actioned: false,
     error: undefined,
   },
-  articles: {},
+  posts: {},
 });
 
 const setup = (storeData = store) => {
@@ -42,27 +42,27 @@ describe('Blog container loaded ', () => {
     const { getByTestId } = render(wrapper);
     const portalHeader = getByTestId('portalHeader');
     expect(portalHeader).toBeTruthy();
-    expect(portalHeader.innerHTML).toContain('Article Portal');
+    expect(portalHeader.innerHTML).toContain('Post Portal');
   });
   test('renders portal navigation', () => {
     const { getByTestId } = render(wrapper);
     const navigationLink = getByTestId('navigationLink');
     expect(navigationLink).toBeTruthy();
     expect(navigationLink.innerHTML).toContain('List');
-    expect(navigationLink.innerHTML).toContain('Add Article');
+    expect(navigationLink.innerHTML).toContain('Add Post');
   });
   test('renders portal sub header', () => {
     const { getByTestId } = render(wrapper);
     const portalSubHeader = getByTestId('portalSubHeader');
     expect(portalSubHeader).toBeTruthy();
-    expect(portalSubHeader.innerHTML).toContain('Articles Portal!');
+    expect(portalSubHeader.innerHTML).toContain('Posts Portal!');
   });
   test('renders portal description', () => {
     const { getByTestId } = render(wrapper);
     const portalDescription = getByTestId('portalDescription');
     expect(portalDescription).toBeTruthy();
     expect(portalDescription.innerHTML).toContain(
-      'Articles can be added, edited and deleted'
+      'Posts can be added, edited and deleted'
     );
   });
 });

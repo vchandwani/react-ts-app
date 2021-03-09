@@ -10,9 +10,7 @@ const Blog: React.FC = (): JSX.Element => (
       <div>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <Link to="/">
-            <Navbar.Brand data-testid="portalHeader">
-              Article Portal
-            </Navbar.Brand>
+            <Navbar.Brand data-testid="portalHeader">Post Portal</Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
@@ -20,25 +18,25 @@ const Blog: React.FC = (): JSX.Element => (
               <Nav.Link as={Link} to="/">
                 List
               </Nav.Link>
-              <Nav.Link as={Link} to="/newArticle">
-                Add Article
+              <Nav.Link as={Link} to="/newPost">
+                Add Post
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
         <Row>
           <Col xs={12} data-testid="portalSubHeader">
-            <h2>Articles Portal!</h2>
+            <h2>Posts Portal!</h2>
           </Col>
         </Row>
         <Row>
           <Col xs={12} data-testid="portalDescription">
-            <p>Articles can be added, edited and deleted</p>
+            <p>Posts can be added, edited and deleted</p>
           </Col>
         </Row>
         <Switch>
-          <Route path="/newArticle/" exact component={NewPost} />
-          <Route path="/newArticle/:id" exact component={NewPost} />
+          <Route path="/newPost/" exact component={NewPost} />
+          <Route path="/newPost/:id" exact component={NewPost} />
           <Route path="/" component={DisplayPost} />
         </Switch>
       </div>

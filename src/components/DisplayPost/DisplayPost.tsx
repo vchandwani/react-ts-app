@@ -4,10 +4,10 @@ import { Col, Row, Button } from 'react-bootstrap';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
 import { loadPost } from '../../utils/loadPost';
-import { PostDataObj, URL, NotificationType } from '../../types/article/data';
+import { PostDataObj, URL, NotificationType } from '../../types/post/data';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
-import { loadArticles, clearResults } from '../../store/modules/articles';
+import { loadPosts, clearResults } from '../../store/modules/posts';
 import { RootState } from '../../store/reducers';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -34,22 +34,22 @@ const DisplayPost: React.FC = (): JSX.Element => {
     undefined
   );
 
-  const { articles, error, isLoaded, isLoading } = useSelector(
-    (state: RootState) => state.articles
+  const { posts, error, isLoaded, isLoading } = useSelector(
+    (state: RootState) => state.posts
   );
 
   useEffect(() => {
     dispatch(clearResults());
-    dispatch(loadArticles(URL));
+    dispatch(loadPosts(URL));
   }, [dispatch]);
 
   useEffect(() => {
-    articles && setPostsDisplay(articles.slice(0, displayCount));
-  }, [articles]);
+    posts && setPostsDisplay(posts.slice(0, displayCount));
+  }, [posts]);
 
   useEffect(() => {
     // on change of click counter re-arrange post display
-    const additionalPosts = articles?.slice(
+    const additionalPosts = posts?.slice(
       (clickCounter - 1) * displayCount,
       clickCounter * displayCount
     );

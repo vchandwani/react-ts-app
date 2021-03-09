@@ -17,15 +17,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Paper, { PaperProps } from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 
-import { PostDataObj, URL, NotificationType } from '../../types/article/data';
+import { PostDataObj, URL, NotificationType } from '../../types/post/data';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
 import {
-  loadArticle,
+  loadPost,
   clearResults,
-  deleteArticle,
+  deletePost,
   actionedClear,
-} from '../../store/modules/article';
+} from '../../store/modules/post';
 import { RootState } from '../../store/reducers';
 
 export interface PostProps extends PostDataObj {
@@ -102,7 +102,7 @@ const Post = ({
   const theme = useTheme();
 
   const { isLoaded, isLoading, actioned, error } = useSelector(
-    (state: RootState) => state.article
+    (state: RootState) => state.post
   );
 
   const readMore = () => {
@@ -113,8 +113,8 @@ const Post = ({
   const checkEdit = () => {
     // check valid id
     dispatch(clearResults());
-    dispatch(loadArticle({ title, author, body, id, userId }));
-    isLoaded && !isLoading && history.push('/newArticle');
+    dispatch(loadPost({ title, author, body, id, userId }));
+    isLoaded && !isLoading && history.push('/newPost');
   };
 
   const deleteConfirm = () => {
@@ -126,12 +126,12 @@ const Post = ({
     dispatch(actionedClear());
   };
   const deletePostHandler = async () => {
-    id && dispatch(deleteArticle(URL, id));
+    id && dispatch(deletePost(URL, id));
   };
 
   useEffect(() => {
     if (actioned) {
-      setNotificationMsg(`Article deleted`);
+      setNotificationMsg(`Post deleted`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
       deleteOperation(id);

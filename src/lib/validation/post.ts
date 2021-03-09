@@ -1,6 +1,6 @@
 import { string, object } from 'yup';
 
-export const ArticleSchema = object().shape({
+export const PostSchema = object().shape({
   // username: string().email('Invalid email address').required('Required'),
   title: string()
     .trim('Invalid')
