@@ -90,9 +90,10 @@ const DisplayPost: React.FC = (): JSX.Element => {
   };
   return (
     <>
-      <BackDrop open={isLoading} />
+      <BackDrop open={isLoading} data-testid="backDropDiv" />
       {error && (
         <Notification
+          data-testid="notificationDiv"
           open={true}
           notificationType={NotificationType.ERROR}
           notificationMsg={error}
@@ -100,10 +101,10 @@ const DisplayPost: React.FC = (): JSX.Element => {
       )}
 
       {isLoaded && postsDisplay && (
-        <Row>
+        <Row data-testid="postDataDiv">
           {postsDisplay.map((post: PostDataObj, index: number) => (
             <Post
-              key={post.userId.toString().concat(index.toString())}
+              key={post?.userId?.toString().concat(index.toString())}
               title={post.title}
               author={post?.author ? post?.author : ''}
               body={post.body}
@@ -111,6 +112,7 @@ const DisplayPost: React.FC = (): JSX.Element => {
               userId={post.userId}
               clicked={() => postSelectedHandler(post.id)}
               deleteOperation={(id: number) => checkDelete(id)}
+              data-testid="postMainDiv"
             />
           ))}
         </Row>
@@ -121,6 +123,7 @@ const DisplayPost: React.FC = (): JSX.Element => {
             className={styles.loadMore}
             variant="primary"
             onClick={() => loadMore()}
+            data-testid="loadMoreButtonDiv"
           >
             Load More
           </Button>

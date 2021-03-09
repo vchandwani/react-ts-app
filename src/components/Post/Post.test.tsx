@@ -123,7 +123,7 @@ describe('Post component loaded ', () => {
   });
 
   test('displays confirmation dialog on click of delete icon', async () => {
-    const { getByTestId } = render(wrapper);
+    const { getByTestId, rerender } = render(wrapper);
     const deleteLink = getByTestId('deleteLink');
     expect(deleteLink).toBeTruthy();
     fireEvent.click(deleteLink);
@@ -172,8 +172,8 @@ describe('Post component loaded ', () => {
 
     const circularDiv = getByTestId('circularDiv');
     expect(circularDiv).toBeTruthy();
-    const backdropDiv = getByTestId('backdropDiv');
-    const style = window.getComputedStyle(backdropDiv);
+    const backDropDiv = getByTestId('backDropDiv');
+    const style = window.getComputedStyle(backDropDiv);
     expect(style.visibility).toBe('visible');
   });
 
@@ -185,8 +185,8 @@ describe('Post component loaded ', () => {
     const dialogCloseButton = getByTestId('dialogCloseButton');
     expect(dialogCloseButton).toBeTruthy();
     await waitFor(() => fireEvent.click(dialogCloseButton));
-    const backdropDiv = getByTestId('backdropDiv');
-    const style = window.getComputedStyle(backdropDiv);
+    const backDropDiv = getByTestId('backDropDiv');
+    const style = window.getComputedStyle(backDropDiv);
     expect(style.visibility).toBe('hidden');
   });
 
@@ -224,9 +224,9 @@ describe('Post component loaded ', () => {
     const dialogCloseButton = getByTestId('dialogCloseButton');
     expect(dialogCloseButton).toBeTruthy();
     expect(dialogCloseButton.innerHTML).toContain('Close');
-    const notificaitonDiv = getByTestId('notificaitonDiv');
-    expect(notificaitonDiv).toBeTruthy();
-    expect(notificaitonDiv.innerHTML).toContain('Article deleted');
+    const notificationDiv = getByTestId('notificationDiv');
+    expect(notificationDiv).toBeTruthy();
+    expect(notificationDiv.innerHTML).toContain('Article deleted');
   });
 
   test('On action error, error notitification is displayed ', async () => {
@@ -247,9 +247,9 @@ describe('Post component loaded ', () => {
     const dialogCloseButton = getByTestId('dialogCloseButton');
     expect(dialogCloseButton).toBeTruthy();
     expect(dialogCloseButton.innerHTML).toContain('Cancel');
-    const notificaitonDiv = getByTestId('notificaitonDiv');
-    expect(notificaitonDiv).toBeTruthy();
-    expect(notificaitonDiv.innerHTML).toContain('Error encountered');
+    const notificationDiv = getByTestId('notificationDiv');
+    expect(notificationDiv).toBeTruthy();
+    expect(notificationDiv.innerHTML).toContain('Error encountered');
     const postDialogDiv = getByTestId('postDialogDiv');
     expect(postDialogDiv).toBeTruthy();
     fireEvent.click(postDialogDiv);

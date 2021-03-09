@@ -18,7 +18,7 @@ describe('Notification component loaded ', () => {
     const { getByTestId } = render(
       <Notification open={true} notificationMsg="Alert notitfication" />
     );
-    expect(getByTestId('notificaitonDiv')).toBeTruthy();
+    expect(getByTestId('notificationDiv')).toBeTruthy();
     expect(getByTestId('notificaitonCollapseDiv')).toBeTruthy();
     const alertContent = getByTestId('alertContent');
     expect(alertContent.innerHTML).toContain('Alert notitfication');
@@ -33,7 +33,7 @@ describe('Notification component loaded ', () => {
         notificationType={NotificationType.SUCCESS}
       />
     );
-    expect(getByTestId('notificaitonDiv')).toBeTruthy();
+    expect(getByTestId('notificationDiv')).toBeTruthy();
     expect(getByTestId('notificaitonCollapseDiv')).toBeTruthy();
     const alertContent = getByTestId('alertContent');
     expect(alertContent.innerHTML).toContain('Success notitfication');
@@ -48,7 +48,7 @@ describe('Notification component loaded ', () => {
         notificationType={NotificationType.ERROR}
       />
     );
-    expect(getByTestId('notificaitonDiv')).toBeTruthy();
+    expect(getByTestId('notificationDiv')).toBeTruthy();
     expect(getByTestId('notificaitonCollapseDiv')).toBeTruthy();
     const alertContent = getByTestId('alertContent');
     expect(alertContent.innerHTML).toContain('Error notitfication');
@@ -78,7 +78,7 @@ describe('Notification component loaded ', () => {
         notificationType={NotificationType.WARNING}
       />
     );
-    expect(getByTestId('notificaitonDiv')).toBeTruthy();
+    expect(getByTestId('notificationDiv')).toBeTruthy();
     expect(getByTestId('notificaitonCollapseDiv')).toBeTruthy();
     expect(getByTestId('notificaitonCol')).toBeTruthy();
     const alertContent = getByTestId('alertContent');

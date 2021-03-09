@@ -163,7 +163,7 @@ const Post = ({
               open={notificationOpen}
               notificationType={notificationType}
               notificationMsg={notificationMsg}
-              data-testid="notificaitonDiv"
+              data-testid="notificationDiv"
             />
           )}
         </DialogContent>
@@ -220,12 +220,12 @@ const Post = ({
         >
           <Card.Body data-testid="postCard" onClick={clicked}>
             <Card.Title data-testid="postTitle">
-              {title.length > characterLength
+              {title?.length > characterLength
                 ? title.substring(0, characterLength)
                 : title}
             </Card.Title>
             <Card.Text data-testid="postContent">
-              {body.length > characterLength
+              {body?.length > characterLength
                 ? body.substring(0, characterLength)
                 : body}
             </Card.Text>

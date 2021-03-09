@@ -23,7 +23,7 @@ const BackDrop: React.FC<BackDropProps> = ({ open = false }) => {
       <Backdrop
         className={classes.backdrop}
         open={open}
-        data-testid="backdropDiv"
+        data-testid="backDropDiv"
       >
         <CircularProgress color="inherit" data-testid="circularDiv" />
       </Backdrop>

@@ -19,7 +19,7 @@ const Notification: React.FC<NotificationProps> = ({
   const [notificationOpen, setNotificationOpen] = useState<boolean>(open);
 
   return (
-    <Row data-testid="notificaitonDiv">
+    <Row data-testid="notificationDiv">
       <Col xs={12} data-testid="notificaitonCol">
         <Collapse in={notificationOpen} data-testid="notificaitonCollapseDiv">
           <Alert
