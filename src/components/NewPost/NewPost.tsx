@@ -65,8 +65,7 @@ const NewPost = (): JSX.Element => {
     }
   }, [error]);
   useEffect(() => {
-    if (actioned) {
-      setFormValues({ title: '', body: '', author: AUTHOR, userId: USERID });
+    if (actioned === true) {
       setNotificationMsg(editable ? `Post edited` : `Post added`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
@@ -105,16 +104,11 @@ const NewPost = (): JSX.Element => {
   return (
     <>
       <BackDrop open={isLoading} data-testid="backDropDiv" />
-      <div data-testid="testDiv">
-        {notificationOpen && notificationMsg && (
-          <Notification
-            data-testid="notificationDiv"
-            open={notificationOpen}
-            notificationType={notificationType}
-            notificationMsg={notificationMsg}
-          />
-        )}
-      </div>
+      <Notification
+        open={notificationOpen}
+        notificationType={notificationType}
+        notificationMsg={notificationMsg || ''}
+      />
 
       <Grid item xs={12} data-testid="postFormDiv">
         <Row className="mt-1 mb-1">

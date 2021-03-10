@@ -84,10 +84,8 @@ describe('Render Post form ', () => {
     expect(mockHistoryPush.mock.calls[0][0]).toBe(`/`);
   });
 
-  test('check post form submit with values', async () => {
+  test('check post form with values', async () => {
     const { getByTestId, getAllByTestId } = render(wrapper);
-    const postFormSubmitButton = getByTestId('postFormSubmitButton');
-    expect(postFormSubmitButton).toBeTruthy();
     const title = getByTestId('postFormTitleField');
     const content = getByTestId('postFormBodyField');
     expect(title.value).toBe('');
@@ -100,11 +98,43 @@ describe('Render Post form ', () => {
     const select = await waitFor(() => getByTestId('postFormAuthorField'));
     fireEvent.change(select, { target: { value: 'Unknown' } });
     await waitFor(() => expect(select.value).toBe('Unknown'));
+  });
 
-    // await act(async () => {
-    //   await waitFor(() => fireEvent.click(postFormSubmitButton));
-    //   const testDiv = getByTestId('testDiv');
-    //   expect(testDiv).toBe('');
-    // });
+  test('check loader on laoding state', async () => {
+    const storeWithError = mockStore({
+      ...initialStoreData,
+      post: {
+        isLoading: true,
+        isLoaded: true,
+        actioned: false,
+        error: undefined,
+      },
+    });
+    const { getByTestId } = render(
+      <Provider store={storeWithError}>
+        <NewPost />
+      </Provider>
+    );
+    const backDropDiv = getByTestId('backDropDiv');
+    const style = window.getComputedStyle(backDropDiv);
+    expect(style.opacity).toBe('1');
+  });
+
+  test('check error notification when error encountered ', async () => {
+    const storeWithError = mockStore({
+      ...initialStoreData,
+      post: {
+        isLoading: false,
+        isLoaded: true,
+        actioned: false,
+        error: 'Error notification',
+      },
+    });
+    const { getByTestId } = render(
+      <Provider store={storeWithError}>
+        <NewPost />
+      </Provider>
+    );
+    expect(screen.getByText(/Error notification/i)).toBeInTheDocument();
   });
 });

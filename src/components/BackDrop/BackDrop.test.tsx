@@ -7,10 +7,10 @@ test('loads and displays backdrop', () => {
   expect(getByTestId('backDropDiv')).toBeTruthy();
   expect(getByTestId('circularDiv')).toBeTruthy();
 
-  rerender(<BackDrop open={false} />);
+  rerender(<BackDrop open={true} />);
   const backDropDiv = getByTestId('backDropDiv');
   const style = window.getComputedStyle(backDropDiv);
-  expect(style.opacity).toBe('0');
+  expect(style.opacity).toBe('1');
 });
 
 test('loads and backdrop is hidden', () => {
