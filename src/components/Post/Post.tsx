@@ -25,6 +25,7 @@ import {
   clearResults,
   deletePost,
   actionedClear,
+  setEditable,
 } from '../../store/modules/post';
 import { RootState } from '../../store/reducers';
 
@@ -261,7 +262,7 @@ const Post = ({
                   justify="flex-end"
                   alignItems="center"
                 >
-                  <Grid>
+                  <Grid onClick={() => dispatch(setEditable(true))}>
                     <Nav.Link
                       onClick={() => checkEdit()}
                       data-testid="editLink"

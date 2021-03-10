@@ -15,10 +15,10 @@ const Blog: React.FC = (): JSX.Element => (
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto" data-testid="navigationLink">
-              <Nav.Link as={Link} to="/">
+              <Nav.Link as={Link} to="/" data-testid="listPostLink">
                 List
               </Nav.Link>
-              <Nav.Link as={Link} to="/newPost">
+              <Nav.Link as={Link} to="/newPost" data-testid="addPostLink">
                 Add Post
               </Nav.Link>
             </Nav>
@@ -36,7 +36,6 @@ const Blog: React.FC = (): JSX.Element => (
         </Row>
         <Switch>
           <Route path="/newPost/" exact component={NewPost} />
-          <Route path="/newPost/:id" exact component={NewPost} />
           <Route path="/" component={DisplayPost} />
         </Switch>
       </div>

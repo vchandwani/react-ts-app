@@ -198,14 +198,6 @@ describe('Post component loaded ', () => {
     expect(mockHistoryPush.mock.calls[0][0]).toBe(`/newPost`);
   });
 
-  test('On click of edit button correct history push is called', async () => {
-    const { getByTestId } = render(wrapper);
-    const editLink = getByTestId('editLink');
-    expect(editLink).toBeTruthy();
-    await waitFor(() => fireEvent.click(editLink));
-    expect(mockHistoryPush.mock.calls[0][0]).toBe(`/newPost`);
-  });
-
   test('On actioned success close button is visible', async () => {
     const storeActioned = mockStore({
       ...store,

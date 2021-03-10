@@ -1,8 +1,11 @@
 import React, { ReactElement } from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
 
 const mockStore = configureStore([thunk]);
@@ -12,6 +15,7 @@ const store = mockStore({
     isLoaded: true,
     actioned: false,
     error: undefined,
+    editable: false,
   },
   posts: {},
 });
@@ -64,5 +68,37 @@ describe('Blog container loaded ', () => {
     expect(portalDescription.innerHTML).toContain(
       'Posts can be added, edited and deleted'
     );
+  });
+
+  test('redirect to home page on click of list link', async () => {
+    const history = createMemoryHistory();
+    const route = '/';
+    history.push(route);
+    const { getByTestId } = render(
+      <Router history={history}>
+        <Provider store={store}>
+          <Blog />
+        </Provider>
+      </Router>
+    );
+    const loadMoreButtonDiv = getByTestId('loadMoreButtonDiv');
+    expect(loadMoreButtonDiv).toBeTruthy();
+  });
+  test('redirect to home page on click of add post link', async () => {
+    const history = createMemoryHistory();
+    const route = '/newPost';
+    history.push(route);
+    const { getByTestId } = render(
+      <Router history={history}>
+        <Provider store={store}>
+          <Blog />
+        </Provider>
+      </Router>
+    );
+    // const postFormSubmitButton = getByTestId('postFormSubmitButton');
+    const leftClick = { button: 0 };
+    userEvent.click(screen.getByText(/Add Post/i), leftClick);
+    expect(screen.getByText(/Back/i)).toBeInTheDocument();
+    expect(screen.getByText(/Title/i)).toBeInTheDocument();
   });
 });

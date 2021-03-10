@@ -5,6 +5,8 @@ import {
   cleanup,
   waitFor,
   screen,
+  act,
+  getByLabelText,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -72,9 +74,9 @@ describe('Render Post form ', () => {
     expect(postFormSubmitButton.innerHTML).toContain('Add Post');
     await waitFor(() => fireEvent.click(postFormSubmitButton));
 
-    const postFormTitleField = getByTestId('postFormTitleField');
-    expect(postFormTitleField).toBeTruthy();
-    expect(postFormTitleField.innerHTML).toContain('Required');
+    const postFormTitleDiv = getByTestId('postFormTitleDiv');
+    expect(postFormTitleDiv).toBeTruthy();
+    expect(postFormTitleDiv.innerHTML).toContain('Required');
 
     const postFormBackButton = getByTestId('postFormBackButton');
     expect(postFormBackButton).toBeTruthy();
@@ -86,18 +88,23 @@ describe('Render Post form ', () => {
     const { getByTestId, getAllByTestId } = render(wrapper);
     const postFormSubmitButton = getByTestId('postFormSubmitButton');
     expect(postFormSubmitButton).toBeTruthy();
-
-    const title = screen.getByLabelText('Title');
-    const content = screen.getByLabelText('Content');
-    const author = getByTestId('postFormAuthorField');
+    const title = getByTestId('postFormTitleField');
+    const content = getByTestId('postFormBodyField');
     expect(title.value).toBe('');
     expect(content.value).toBe('');
-    // fireEvent.change(title, { target: { value: 'Test Title' } });
-    // fireEvent.change(content, { target: { value: 'Content example' } });
-
-    userEvent.type(title, 'Test Title');
-    userEvent.type(content, 'Content example');
-    expect(title.value).toBe('Test Title');
+    fireEvent.change(title, { target: { value: 'Test title' } });
+    fireEvent.change(content, { target: { value: 'Content example' } });
+    expect(title.value).toBe('Test title');
     expect(content.value).toBe('Content example');
+
+    const select = await waitFor(() => getByTestId('postFormAuthorField'));
+    fireEvent.change(select, { target: { value: 'Unknown' } });
+    await waitFor(() => expect(select.value).toBe('Unknown'));
+
+    // await act(async () => {
+    //   await waitFor(() => fireEvent.click(postFormSubmitButton));
+    //   const testDiv = getByTestId('testDiv');
+    //   expect(testDiv).toBe('');
+    // });
   });
 });

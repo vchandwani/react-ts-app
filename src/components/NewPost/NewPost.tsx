@@ -1,17 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import {
-  Grid,
-  TextField,
-  InputAdornment,
-  Select,
-  MenuItem,
-  Button,
-  Typography,
-} from '@material-ui/core';
-import { Formik, Form, Field, FieldProps } from 'formik';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
+import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,29 +11,21 @@ import {
   AUTHOR,
   USERID,
 } from '../../types/post/data';
-import { PostSchema } from '../../lib/validation/post';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
 import { RootState } from '../../store/reducers';
-import { postPost, clearActioned } from '../../store/modules/post';
+import {
+  postPost,
+  clearActioned,
+  clearResults,
+} from '../../store/modules/post';
+import PostForm from './PostForm';
 
 const useStyles = makeStyles((theme) => ({
   postForm: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-  },
-  submit: {
-    margin: theme.spacing(3, 1),
-  },
-  tickIcon: {
-    color: theme.palette.primary.main,
-  },
-  crossIcon: {
-    color: theme.palette.error.main,
   },
   newPost: {
     margin: theme.spacing(3),
@@ -60,11 +41,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NewPost = (): JSX.Element => {
-  const { post, isLoaded, isLoading, error, actioned } = useSelector(
+  const { post, isLoaded, isLoading, error, actioned, editable } = useSelector(
     (state: RootState) => state.post
   );
-
-  const editable: boolean = !!post?.id;
 
   const [notificationOpen, setNotificationOpen] = useState<boolean>(false);
   const history = useHistory();
@@ -87,7 +66,8 @@ const NewPost = (): JSX.Element => {
   }, [error]);
   useEffect(() => {
     if (actioned) {
-      setNotificationMsg(`${editable}` ? `Post edited` : `Post added`);
+      setFormValues({ title: '', body: '', author: AUTHOR, userId: USERID });
+      setNotificationMsg(editable ? `Post edited` : `Post added`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
     } else {
@@ -114,32 +94,28 @@ const NewPost = (): JSX.Element => {
     id: initial.id,
   });
 
-  const getUsernameEndAdornment = (
-    errorMsg: string | undefined
-  ): JSX.Element => {
-    if (!errorMsg) {
-      return <CheckCircleIcon className={styles.tickIcon} />;
-    }
-    if (errorMsg) {
-      return <ErrorIcon className={styles.crossIcon} />;
-    }
-    return <></>;
-  };
-
   const backClick = (): void => {
+    dispatch(clearResults());
     history.push('/');
+  };
+  const submitClick = (values: PostDataObj): void => {
+    setFormValues({ ...values });
+    dispatch(postPost(URL, values));
   };
   return (
     <>
       <BackDrop open={isLoading} data-testid="backDropDiv" />
-      {notificationOpen && notificationMsg && (
-        <Notification
-          data-testid="notificationDiv"
-          open={notificationOpen}
-          notificationType={notificationType}
-          notificationMsg={notificationMsg}
-        />
-      )}
+      <div data-testid="testDiv">
+        {notificationOpen && notificationMsg && (
+          <Notification
+            data-testid="notificationDiv"
+            open={notificationOpen}
+            notificationType={notificationType}
+            notificationMsg={notificationMsg}
+          />
+        )}
+      </div>
+
       <Grid item xs={12} data-testid="postFormDiv">
         <Row className="mt-1 mb-1">
           <Col xs={12}>
@@ -154,126 +130,12 @@ const NewPost = (): JSX.Element => {
           className={(styles.newPost, styles.postForm)}
           data-testid="postFormContainer"
         >
-          <Formik
-            initialValues={formValues}
-            validationSchema={PostSchema}
-            onSubmit={(values, actions) => {
-              setFormValues({ ...values });
-              actions.setSubmitting(false);
-              dispatch(postPost(URL, values));
-            }}
-            // {/* enableReinitialize={true} */}
-          >
-            {({ errors, handleBlur, handleChange, touched }) => (
-              <Form className={styles.form}>
-                <Grid
-                  container
-                  direction="row"
-                  justify="flex-end"
-                  alignItems="center"
-                >
-                  <Grid item xs={12}>
-                    <Field name="title" type="text">
-                      {({ field, form, meta }: FieldProps) => (
-                        <TextField
-                          data-testid="postFormTitleField"
-                          {...field}
-                          variant="filled"
-                          fullWidth
-                          autoFocus={true}
-                          id="title"
-                          label="Title"
-                          autoComplete="title"
-                          error={meta.touched && meta.error !== undefined}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                {getUsernameEndAdornment(errors.title)}
-                              </InputAdornment>
-                            ),
-                          }}
-                          helperText={
-                            errors.title && touched.title ? errors.title : null
-                          }
-                        />
-                      )}
-                    </Field>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Field name="body" type="text">
-                      {({ field, form, meta }: FieldProps) => (
-                        <TextField
-                          multiline
-                          rowsMax={4}
-                          data-testid="postFormBodyField"
-                          {...field}
-                          variant="filled"
-                          fullWidth
-                          id="body"
-                          autoComplete="body"
-                          label="Content"
-                          error={meta.touched && meta.error !== undefined}
-                          helperText={
-                            errors.body && touched.body ? errors.body : null
-                          }
-                        />
-                      )}
-                    </Field>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Field name="author" type="text" label="Author">
-                      {({ field, form, meta }: FieldProps) => (
-                        <Select
-                          {...field}
-                          data-testid="postFormAuthorField"
-                          id="author"
-                          variant="filled"
-                          fullWidth
-                          error={meta.touched && meta.error !== undefined}
-                        >
-                          <MenuItem value={AUTHOR}>{AUTHOR}</MenuItem>
-                          <MenuItem value="Unknown">Unknown</MenuItem>
-                        </Select>
-                      )}
-                    </Field>
-                  </Grid>
-                  <Grid
-                    container
-                    direction="row"
-                    item
-                    xs={12}
-                    justify="flex-end"
-                    spacing={1}
-                  >
-                    <Grid item xs={12} sm={3}>
-                      <Button
-                        data-testid="postFormBackButton"
-                        variant="contained"
-                        color="secondary"
-                        fullWidth
-                        className={styles.submit}
-                        onClick={backClick}
-                      >
-                        Back
-                      </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <Button
-                        data-testid="postFormSubmitButton"
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        className={styles.submit}
-                      >
-                        {`${editable ? `Edit` : `Add`} Post`}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Form>
-            )}
-          </Formik>
+          <PostForm
+            formValues={formValues}
+            onSubmit={submitClick}
+            backClick={backClick}
+            editable={editable}
+          />
         </Col>
       )}
     </>

@@ -12,6 +12,7 @@ export interface PostState {
   error: string | undefined;
   post: PostDataObj | undefined;
   actioned?: boolean;
+  editable: boolean;
 }
 
 export const initialState: PostState = {
@@ -20,11 +21,15 @@ export const initialState: PostState = {
   error: undefined,
   post: undefined,
   actioned: false,
+  editable: false,
 };
 
 export interface PostActionPayload {
   results?: PostDataObj[] | undefined;
   error?: string | undefined;
+}
+export interface EditablePayload {
+  editable: boolean;
 }
 
 //
@@ -122,6 +127,11 @@ const post = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.actioned = false;
     },
+    // Clear current results
+    editableVal(state, { payload }: PayloadAction<EditablePayload>): void {
+      // eslint-disable-next-line no-param-reassign
+      state.editable = payload.editable;
+    },
 
     deletePostStart(state): void {
       // eslint-disable-next-line no-param-reassign
@@ -172,6 +182,7 @@ export const {
   postPostFailed,
   clearResults,
   actionedClear,
+  editableVal,
   deletePostStart,
   deletePostComplete,
   deletePostFailed,
@@ -239,6 +250,16 @@ export const postPost = (
  */
 export const clearActioned = (): AppThunk => async (dispatch: AppDispatch) => {
   dispatch(actionedClear());
+};
+
+/**
+ *  Post Editable
+ *
+ */
+export const setEditable = (editable: boolean): AppThunk => async (
+  dispatch: AppDispatch
+) => {
+  dispatch(editableVal({ editable }));
 };
 
 /**
