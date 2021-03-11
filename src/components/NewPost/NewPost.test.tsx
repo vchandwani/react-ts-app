@@ -5,15 +5,11 @@ import {
   cleanup,
   waitFor,
   screen,
-  act,
-  getByLabelText,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import userEvent from '@testing-library/user-event';
 import NewPost from './NewPost';
-import { PostDataObj, AUTHOR } from '../../types/post/data';
 
 afterEach(cleanup);
 
@@ -130,11 +126,43 @@ describe('Render Post form ', () => {
         error: 'Error notification',
       },
     });
-    const { getByTestId } = render(
+    render(
       <Provider store={storeWithError}>
         <NewPost />
       </Provider>
     );
     expect(screen.getByText(/Error notification/i)).toBeInTheDocument();
+  });
+
+  test('check success notification when add data submitted ', async () => {
+    const storeWithActioned = mockStore({
+      ...initialStoreData,
+      post: {
+        isLoading: false,
+        isLoaded: true,
+        actioned: true,
+        error: undefined,
+      },
+    });
+    wrapper = setup(storeWithActioned);
+    render(wrapper);
+
+    expect(screen.getByText(/Post added/i)).toBeInTheDocument();
+  });
+  test('check success notification when edit data submitted ', async () => {
+    const storeWithActioned = mockStore({
+      ...initialStoreData,
+      post: {
+        isLoading: false,
+        isLoaded: true,
+        actioned: true,
+        error: undefined,
+        editable: true,
+      },
+    });
+    wrapper = setup(storeWithActioned);
+    render(wrapper);
+
+    expect(screen.getByText(/Post edited/i)).toBeInTheDocument();
   });
 });
