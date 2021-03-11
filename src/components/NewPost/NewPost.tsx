@@ -69,6 +69,7 @@ const NewPost = (): JSX.Element => {
       setNotificationMsg(editable ? `Post edited` : `Post added`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
+      setFormValues({ ...formValues, title: '', body: '' });
     } else {
       setNotificationOpen(false);
     }
@@ -126,7 +127,7 @@ const NewPost = (): JSX.Element => {
         >
           <PostForm
             formValues={formValues}
-            onSubmit={submitClick}
+            handleSubmit={submitClick}
             backClick={backClick}
             editable={editable}
           />

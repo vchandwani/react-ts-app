@@ -10,13 +10,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import { Formik, Form, Field, FieldProps } from 'formik';
-import { PostDataObj, AUTHOR } from '../../types/post/data';
+import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik';
+import { PostDataObj, AUTHOR, Values } from '../../types/post/data';
 import { PostSchema } from '../../lib/validation/post';
 
 interface FormProps {
   formValues: PostDataObj;
-  onSubmit(values: PostDataObj): void;
+  handleSubmit(values: PostDataObj): void;
   backClick(): void;
   editable: boolean;
 }
@@ -36,20 +36,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const PostForm = (props: FormProps): JSX.Element => {
-  const { formValues, onSubmit, backClick, editable } = props;
+  const { formValues, handleSubmit, backClick, editable } = props;
   const styles = useStyles();
 
   const getUsernameEndAdornment = (
     errorMsg: string | undefined
   ): JSX.Element => {
     if (!errorMsg) {
-      return <CheckCircleIcon className={styles.tickIcon} />;
+      return (
+        <CheckCircleIcon
+          data-testid="successIcon"
+          className={styles.tickIcon}
+        />
+      );
     }
-    if (errorMsg) {
-      return <ErrorIcon className={styles.crossIcon} />;
-    }
-    return <></>;
+    return <ErrorIcon data-testid="errorIcon" className={styles.crossIcon} />;
   };
+
+  const onSubmit = async (values: PostDataObj) => {
+    handleSubmit(values);
+  };
+
   return (
     <Formik
       initialValues={formValues}
@@ -59,7 +66,6 @@ const PostForm = (props: FormProps): JSX.Element => {
         actions.setSubmitting(false);
         onSubmit(values);
       }}
-      // {/* enableReinitialize={true} */}
     >
       {({ errors, handleBlur, handleChange, touched }) => (
         <Form className={styles.form}>
