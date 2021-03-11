@@ -149,6 +149,22 @@ describe('Render Post form ', () => {
 
     expect(screen.getByText(/Post added/i)).toBeInTheDocument();
   });
+  test('check edit scenario ', async () => {
+    const storeWithEditable = mockStore({
+      ...initialStoreData,
+      post: {
+        isLoading: false,
+        isLoaded: true,
+        actioned: false,
+        error: undefined,
+        editable: true,
+      },
+    });
+    wrapper = setup(storeWithEditable);
+    render(wrapper);
+
+    expect(screen.getByText(/Edit Post/i)).toBeInTheDocument();
+  });
   test('check success notification when edit data submitted ', async () => {
     const storeWithActioned = mockStore({
       ...initialStoreData,
