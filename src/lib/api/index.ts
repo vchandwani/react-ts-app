@@ -1,5 +1,7 @@
 import posts from './modules/posts';
 
-export default {
+const Posts = {
   posts,
 };
+
+export default Posts;
