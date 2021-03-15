@@ -1,5 +1,11 @@
 import React, { ReactElement } from 'react';
-import { fireEvent, render, cleanup, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  cleanup,
+  waitFor,
+  screen,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -71,7 +77,7 @@ describe('Post component loaded ', () => {
     wrapper = setup(initialData, store);
   });
 
-  test('displays initial component with post Card div', () => {
+  test('displays initial component with post Card div', async () => {
     const { getByTestId } = render(wrapper);
     const postCardDiv = getByTestId('postCardDiv');
     expect(postCardDiv).toBeTruthy();
@@ -85,6 +91,10 @@ describe('Post component loaded ', () => {
     expect(editLink).toBeTruthy();
     const deleteLink = getByTestId('deleteLink');
     expect(deleteLink).toBeTruthy();
+
+    const postCard = getByTestId('postCard');
+    expect(postCard).toBeTruthy();
+    await waitFor(() => fireEvent.click(postCard));
   });
   test('displays component with truncated title, author and body values', () => {
     const { getByTestId } = render(wrapper);
