@@ -10,8 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik';
-import { PostDataObj, AUTHOR, Values } from '../../types/post/data';
+import { Formik, Form, Field, FieldProps } from 'formik';
+import { PostDataObj, AUTHOR } from '../../types/post/data';
 import { PostSchema } from '../../lib/validation/post';
 
 interface FormProps {
@@ -89,15 +89,15 @@ const PostForm = (props: FormProps): JSX.Element => {
                     label="Title"
                     autoComplete="title"
                     error={meta.touched && meta.error !== undefined}
-                    inputProps={{
-                      'data-testid': 'postFormTitleField',
-                    }}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           {getUsernameEndAdornment(errors.title)}
                         </InputAdornment>
                       ),
+                      inputProps: {
+                        'data-testid': 'postFormTitleField',
+                      },
                     }}
                     helperText={
                       errors.title && touched.title ? errors.title : null
