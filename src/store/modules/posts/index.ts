@@ -18,6 +18,10 @@ export interface PostsActionPayload {
   error?: string | undefined;
 }
 
+export interface DeleteActionPayload {
+  newPosts: Array<PostDataObj>;
+}
+
 export const initialState: PostsState = {
   isLoading: false,
   isLoaded: false,
@@ -73,6 +77,18 @@ const posts = createSlice({
       // eslint-disable-next-line no-param-reassign
       state = initialState;
     },
+
+    // delete post
+    deleteResult(state, { payload }: PayloadAction<DeleteActionPayload>): void {
+      // eslint-disable-next-line no-param-reassign
+      state.isLoaded = true;
+      // eslint-disable-next-line no-param-reassign
+      state.isLoading = false;
+      if (payload.newPosts) {
+        // eslint-disable-next-line no-param-reassign
+        state.posts = payload.newPosts;
+      }
+    },
   },
 });
 
@@ -82,6 +98,7 @@ export const {
   loadPostsComplete,
   loadPostsFailed,
   clearResults,
+  deleteResult,
 } = posts.actions;
 
 export default posts.reducer;
@@ -118,4 +135,16 @@ export const loadPosts = (apiResource: string): AppThunk => async (
       })
     );
   }
+};
+
+/**
+ * Delete document deom results
+ *
+ * @param id {Number}
+ */
+export const deletePost = (newPosts: Array<PostDataObj>): AppThunk => async (
+  dispatch: AppDispatch
+) => {
+  dispatch(loadPostsStart());
+  dispatch(deleteResult({ newPosts }));
 };
