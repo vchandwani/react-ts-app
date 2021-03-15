@@ -7,7 +7,7 @@ import { loadPost } from '../../utils/loadPost';
 import { PostDataObj, URL, NotificationType } from '../../types/post/data';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
-import { loadPosts, clearResults } from '../../store/modules/posts';
+import { loadPosts, clearResults, deletePost } from '../../store/modules/posts';
 import { RootState } from '../../store/reducers';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -24,11 +24,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 const DisplayPost: React.FC = (): JSX.Element => {
   const styles = useStyles({});
   const dispatch = useDispatch();
-  const [postsDisplay, setPostsDisplay] = useState<Array<PostDataObj>>([]);
   const [selectedPostId, setSelectedPostId] = useState<number | undefined>(
     undefined
   );
   const [clickCounter, setClickCounter] = useState<number>(1);
+  const [deleteCounter, setDeleteCounter] = useState<number>(0);
   const displayCount: number = 4;
   const [loadedPost, setLoadedPost] = useState<PostDataObj | undefined>(
     undefined
@@ -42,19 +42,6 @@ const DisplayPost: React.FC = (): JSX.Element => {
     dispatch(clearResults());
     dispatch(loadPosts(URL));
   }, [dispatch]);
-
-  useEffect(() => {
-    posts && setPostsDisplay(posts.slice(0, displayCount));
-  }, [posts]);
-
-  useEffect(() => {
-    // on change of click counter re-arrange post display
-    const additionalPosts = posts?.slice(
-      (clickCounter - 1) * displayCount,
-      clickCounter * displayCount
-    );
-    setPostsDisplay(postsDisplay.concat(additionalPosts));
-  }, [clickCounter]);
 
   useEffect(() => {
     // Make call for selected data
@@ -85,7 +72,9 @@ const DisplayPost: React.FC = (): JSX.Element => {
   const checkDelete = (id: number) => {
     if (id) {
       // remove deleted id from display
-      setPostsDisplay(postsDisplay.filter((i) => i.id !== id));
+      setDeleteCounter(deleteCounter + 1);
+      const newPosts: Array<PostDataObj> = posts.filter((i) => i.id !== id);
+      dispatch(deletePost(newPosts));
     }
   };
   return (
@@ -100,21 +89,24 @@ const DisplayPost: React.FC = (): JSX.Element => {
         />
       )}
 
-      {isLoaded && postsDisplay && (
-        <Row data-testid="postDataDiv">
-          {postsDisplay.map((post: PostDataObj, index: number) => (
-            <Post
-              key={post?.userId?.toString().concat(index.toString())}
-              title={post.title}
-              author={post?.author ? post?.author : ''}
-              body={post.body}
-              id={post.id}
-              userId={post.userId}
-              clicked={() => postSelectedHandler(post.id)}
-              deleteOperation={(id: number) => checkDelete(id)}
-              data-testid="postMainDiv"
-            />
-          ))}
+      {isLoaded && posts && (
+        <Row data-testid="postDataDiv" key="postData">
+          {posts
+            .slice(0, clickCounter * displayCount - deleteCounter)
+            .map((post: PostDataObj, index: number) => (
+              <Post
+                key={'post_'.concat(index.toString())}
+                keyVal={'key_'.concat(index.toString())}
+                title={post.title}
+                author={post?.author ? post?.author : ''}
+                body={post.body}
+                id={post.id}
+                userId={post.userId}
+                clicked={() => postSelectedHandler(post.id)}
+                deleteOperation={(id: number) => checkDelete(id)}
+                data-testid="postMainDiv"
+              />
+            ))}
         </Row>
       )}
       <Row>

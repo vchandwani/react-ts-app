@@ -32,6 +32,7 @@ import { RootState } from '../../store/reducers';
 export interface PostProps extends PostDataObj {
   clicked(): void;
   deleteOperation(id: number | undefined): void;
+  keyVal: string;
 }
 
 function PaperComponent(props: PaperProps) {
@@ -88,6 +89,7 @@ const Post = ({
   id,
   userId,
   deleteOperation,
+  keyVal,
 }: PostProps): JSX.Element => {
   const [characterLength, setCharacterLength] = useState(20);
   const [fullRead, setFullRead] = useState(false);
@@ -123,6 +125,10 @@ const Post = ({
 
   const handleClose = () => {
     setOpen(false);
+    setNotificationOpen(false);
+    if (actioned) {
+      deleteOperation(id);
+    }
     dispatch(actionedClear());
   };
   const deletePostHandler = async () => {
@@ -134,9 +140,6 @@ const Post = ({
       setNotificationMsg(`Post deleted`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
-      deleteOperation(id);
-    } else {
-      setNotificationOpen(false);
     }
   }, [actioned]);
   useEffect(() => {
@@ -214,6 +217,7 @@ const Post = ({
         md={4}
         className="mt-1 mb-1"
         data-testid="postCardDiv"
+        key={keyVal}
       >
         <Card
           className={[styles.postDiv, fullRead && styles.height100].join(' ')}

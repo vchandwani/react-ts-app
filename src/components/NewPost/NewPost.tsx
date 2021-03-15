@@ -69,7 +69,6 @@ const NewPost = (): JSX.Element => {
       setNotificationMsg(editable ? `Post edited` : `Post added`);
       setNotificationType(NotificationType.SUCCESS);
       setNotificationOpen(true);
-      setFormValues({ ...formValues, title: '', body: '' });
     } else {
       setNotificationOpen(false);
     }
@@ -86,13 +85,7 @@ const NewPost = (): JSX.Element => {
     [post]
   );
 
-  const [formValues, setFormValues] = useState<PostDataObj>({
-    userId: initial.userId,
-    author: initial.author,
-    title: initial.title,
-    body: initial.body,
-    id: initial.id,
-  });
+  const [formValues, setFormValues] = useState<PostDataObj>({ ...initial });
 
   const backClick = (): void => {
     dispatch(clearResults());
@@ -126,7 +119,7 @@ const NewPost = (): JSX.Element => {
           data-testid="postFormContainer"
         >
           <PostForm
-            formValues={formValues}
+            formValues={actioned ? initial : formValues}
             handleSubmit={submitClick}
             backClick={backClick}
             editable={editable}
