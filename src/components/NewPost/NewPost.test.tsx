@@ -161,9 +161,12 @@ describe('Render Post form ', () => {
       },
     });
     wrapper = setup(storeWithEditable);
-    render(wrapper);
+    const { getByTestId } = render(wrapper);
 
-    expect(screen.getByText(/Edit Post/i)).toBeInTheDocument();
+    const postFormSubmitButton = getByTestId('postFormSubmitButton');
+    await waitFor(() =>
+      expect(postFormSubmitButton.innerHTML).toContain('Edit Post')
+    );
   });
   test('check success notification when edit data submitted ', async () => {
     const storeWithActioned = mockStore({
