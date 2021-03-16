@@ -49,10 +49,9 @@ const DisplayPost: React.FC = (): JSX.Element => {
       const loadData = async () => {
         if (!loadedPost || (loadedPost && loadedPost.id !== selectedPostId)) {
           const data = await loadPost(selectedPostId);
+          setLoadedPost(undefined);
           if (data) {
             setLoadedPost(data);
-          } else {
-            setLoadedPost(undefined);
           }
         }
       };
