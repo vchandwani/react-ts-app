@@ -5,6 +5,7 @@ export interface PostsAPI {
   loadPosts(apiResource: string): Promise<PostDataObj[]>;
   postPost(apiResource: string, val: PostDataObj): Promise<PostPostResult>;
   deletePost(apiResource: string): Promise<PostPostResult>;
+  getPost(apiResource: string): Promise<PostDataObj | null>;
 }
 
 // Format of API results
@@ -98,6 +99,20 @@ const posts: PostsAPI = {
       success: true,
       message: res.data.message || 'Success',
     };
+  },
+  /**
+   * Load posts
+   */
+  getPost: async (apiResource: string): Promise<PostDataObj | null> => {
+    const url = `${apiResource}`;
+    const res = await axios.get(url);
+    let result: PostDataObj | null;
+    if (res.data) {
+      result = res.data;
+    } else {
+      result = null;
+    }
+    return result;
   },
 };
 

@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'react-bootstrap';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Post from '../Post/Post';
-import { loadPost } from '../../utils/loadPost';
 import { PostDataObj, URL, NotificationType } from '../../types/post/data';
 import BackDrop from '../BackDrop/BackDrop';
 import Notification from '../Notification/Notification';
 import { loadPosts, clearResults, deletePost } from '../../store/modules/posts';
+import { getPost } from '../../store/modules/post';
 import { RootState } from '../../store/reducers';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -37,6 +37,7 @@ const DisplayPost: React.FC = (): JSX.Element => {
   const { posts, error, isLoaded, isLoading } = useSelector(
     (state: RootState) => state.posts
   );
+  const { post } = useSelector((state: RootState) => state.post);
 
   useEffect(() => {
     dispatch(clearResults());
@@ -48,16 +49,16 @@ const DisplayPost: React.FC = (): JSX.Element => {
     if (selectedPostId) {
       const loadData = async () => {
         if (!loadedPost || (loadedPost && loadedPost.id !== selectedPostId)) {
-          const data = await loadPost(selectedPostId);
+          dispatch(getPost(URL, selectedPostId));
           setLoadedPost(undefined);
-          if (data) {
-            setLoadedPost(data);
+          if (post) {
+            setLoadedPost(post);
           }
         }
       };
       loadData();
     }
-  }, [selectedPostId, loadedPost]);
+  }, [selectedPostId, loadedPost, post, dispatch]);
 
   const postSelectedHandler = (id: number | undefined) => {
     setSelectedPostId(id);
@@ -92,16 +93,16 @@ const DisplayPost: React.FC = (): JSX.Element => {
         <Row data-testid="postDataDiv" key="postData">
           {posts
             .slice(0, clickCounter * displayCount - deleteCounter)
-            .map((post: PostDataObj, index: number) => (
+            .map((postData: PostDataObj, index: number) => (
               <Post
                 key={'post_'.concat(index.toString())}
                 keyVal={'key_'.concat(index.toString())}
-                title={post.title}
-                author={post?.author ? post?.author : ''}
-                body={post.body}
-                id={post.id}
-                userId={post.userId}
-                clicked={() => postSelectedHandler(post.id)}
+                title={postData.title}
+                author={postData?.author ? postData?.author : ''}
+                body={postData.body}
+                id={postData.id}
+                userId={postData.userId}
+                clicked={() => postSelectedHandler(postData.id)}
                 deleteOperation={(id: number) => checkDelete(id)}
                 data-testid="postMainDiv"
               />

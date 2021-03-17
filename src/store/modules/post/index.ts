@@ -296,3 +296,33 @@ export const deletePost = (apiResource: string, id: number): AppThunk => async (
     );
   }
 };
+
+/**
+ * Load document results based on document type
+ *
+ * @param apiResource {String}
+ * @param id {String}
+ */
+export const getPost = (apiResource: string, id: number): AppThunk => async (
+  dispatch: AppDispatch
+) => {
+  dispatch(loadPostStart());
+
+  const url: string = `${apiResource}/`.concat(id ? id.toString() : '');
+
+  try {
+    const result = await api.posts.getPost(url);
+
+    if (result?.id) {
+      dispatch(loadPostComplete(result));
+    } else {
+      dispatch(loadPostFailed());
+    }
+  } catch (error) {
+    // let errorMessage = error;
+    // if (error && error.message) {
+    //   errorMessage = error.message;
+    // }
+    dispatch(loadPostFailed());
+  }
+};
