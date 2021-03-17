@@ -31,12 +31,12 @@ interface PostPostResult {
 }
 
 /**
- * Documents API
+ * Posts API
  */
 
 const posts: PostsAPI = {
   /**
-   * Load documents by type
+   * Load posts
    */
   loadPosts: async (apiResource: string): Promise<PostDataObj[]> => {
     const url = `${apiResource}`;
@@ -76,7 +76,7 @@ const posts: PostsAPI = {
   },
 
   /**
-   * Delete post document
+   * Delete post
    * @param apiResource
    */
   deletePost: async (apiResource: string): Promise<PostPostResult> => {
