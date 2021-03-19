@@ -1,5 +1,6 @@
 {
   "name": "react-ts-app",
+  "homepage": "http://vchandwani.github.io/react-ts-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -47,7 +48,9 @@
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src --color",
     "format": "prettier --write 'src/**/*.{ts,tsx,scss,css,json}'",
-    "isready": "npm run format && npm run lint && npm run build"
+    "isready": "npm run format && npm run lint && npm run build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -87,6 +90,7 @@
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.22.0",
     "eslint-plugin-react-hooks": "4.2.0",
+    "gh-pages": "^3.1.0",
     "prettier": "2.2.1",
     "prettier-eslint": "12.0.0",
     "prettier-eslint-cli": "5.0.0"
