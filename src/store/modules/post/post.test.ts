@@ -3,7 +3,7 @@
 import mockAxios, { AxiosResponse } from 'axios';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { cleanup } from '@testing-library/react';
+import { cleanup, waitFor } from '@testing-library/react';
 import reducer, {
   PostActionPayload,
   initialState,
@@ -21,6 +21,8 @@ import reducer, {
   deletePostComplete,
   deletePostFailed,
   loadPost,
+  getPost,
+  deletePost,
 } from './index';
 import api from '../../../lib/api';
 import { URL } from '../../../types/post/data';
@@ -148,4 +150,36 @@ describe('post reducer', () => {
     expect(error).toBe('Error');
     expect(actioned).toBe(false);
   });
+  it('should run getPost with success ', async () => {
+    const store = mockStore(initialState);
+    await store.dispatch(getPost({ ...sampleData }));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/loadPostStart');
+    expect(actions[1].type).toBe('post/loadPostComplete');
+  });
+  it('should run getPost with failure ', async () => {
+    const store = mockStore(initialState);
+    await store.dispatch(getPost());
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/loadPostStart');
+    expect(actions[1].type).toBe('post/loadPostFailed');
+  });
+  it('should run deletePost with success', async () => {
+    const store = mockStore(initialState);
+    await store.dispatch(deletePost(URL, 1)).then(() => {
+      const actions = store.getActions();
+      console.log(actions);
+      // expect(actions[0].type).toBe('post/deletePostStart');
+      // expect(actions[1].type).toBe('post/deletePostComplete');
+    });
+  });
+  // it('should run deletePost with failure ', async () => {
+  //   const store = mockStore(initialState);
+  //   await store.dispatch(deletePost(`URL`, '2')).then(() => {
+  //     const actions = store.getActions();
+  //     console.log(actions);
+  //     expect(actions[0].type).toBe('post/deletePostStart');
+  //     expect(actions[1].type).toBe('post/deletePostFailed');
+  //   });
+  // });
 });

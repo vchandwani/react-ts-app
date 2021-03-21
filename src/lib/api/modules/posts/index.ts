@@ -26,7 +26,7 @@ interface PostPostAPIResponse {
   message?: string;
 }
 
-interface PostPostResult {
+export interface PostPostResult {
   success: boolean;
   message: string;
 }
@@ -89,15 +89,17 @@ const posts: PostsAPI = {
       },
     });
 
-    if (res.status !== 200) {
-      return {
-        success: false,
-        message: res.data.message || 'Unknown error',
-      };
+    if (res) {
+      if (res.status === 200) {
+        return {
+          success: true,
+          message: res?.data?.message || 'Success',
+        };
+      }
     }
     return {
-      success: true,
-      message: res.data.message || 'Success',
+      success: false,
+      message: res.data.message || 'Unknown error',
     };
   },
   /**
@@ -105,12 +107,10 @@ const posts: PostsAPI = {
    */
   getPost: async (apiResource: string): Promise<PostDataObj | null> => {
     const url = `${apiResource}`;
-    const res = await axios.get(url);
-    let result: PostDataObj | null;
-    if (res.data) {
-      result = res.data;
-    } else {
-      result = null;
+    const res: PostDataObj = await axios.get(url);
+    let result: PostDataObj | null = null;
+    if (res) {
+      result = res;
     }
     return result;
   },

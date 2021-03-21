@@ -5,6 +5,7 @@ import { PostDataObj } from '../../../types/post/data';
 // eslint-disable-next-line import/no-cycle
 import { AppDispatch } from '../../index';
 import api from '../../../lib/api';
+import { PostPostResult } from '../../../lib/api/modules/posts';
 
 export interface PostState {
   isLoading: boolean;
@@ -301,20 +302,15 @@ export const deletePost = (apiResource: string, id: number): AppThunk => async (
  * Load document results based on document type
  *
  * @param apiResource {String}
- * @param id {String}
+ * @param PostDataObj {String}
  */
-export const getPost = (apiResource: string, id: number): AppThunk => async (
+export const getPost = (postData: PostDataObj): AppThunk => async (
   dispatch: AppDispatch
 ) => {
   dispatch(loadPostStart());
-
-  const url: string = `${apiResource}/`.concat(id ? id.toString() : '');
-
   try {
-    const result = await api.posts.getPost(url);
-
-    if (result?.id) {
-      dispatch(loadPostComplete(result));
+    if (postData.id) {
+      dispatch(loadPostComplete(postData));
     } else {
       dispatch(loadPostFailed());
     }

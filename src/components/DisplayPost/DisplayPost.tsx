@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const DisplayPost: React.FC = (): JSX.Element => {
   const styles = useStyles({});
   const dispatch = useDispatch();
-  const [selectedPostId, setSelectedPostId] = useState<number | undefined>(
+  const [selectedPost, setSelectedPost] = useState<PostDataObj | undefined>(
     undefined
   );
   const [clickCounter, setClickCounter] = useState<number>(1);
@@ -46,10 +46,10 @@ const DisplayPost: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     // Make call for selected data
-    if (selectedPostId) {
+    if (selectedPost) {
       const loadData = async () => {
-        if (!loadedPost || (loadedPost && loadedPost.id !== selectedPostId)) {
-          dispatch(getPost(URL, selectedPostId));
+        if (!loadedPost || (loadedPost && loadedPost.id !== selectedPost.id)) {
+          dispatch(getPost(selectedPost));
           setLoadedPost(undefined);
           if (post) {
             setLoadedPost(post);
@@ -58,10 +58,10 @@ const DisplayPost: React.FC = (): JSX.Element => {
       };
       loadData();
     }
-  }, [selectedPostId, loadedPost, post, dispatch]);
+  }, [selectedPost, loadedPost, post, dispatch]);
 
-  const postSelectedHandler = (id: number | undefined) => {
-    setSelectedPostId(id);
+  const postSelectedHandler = (data: PostDataObj) => {
+    setSelectedPost(data);
   };
 
   const loadMore = () => {
@@ -102,7 +102,7 @@ const DisplayPost: React.FC = (): JSX.Element => {
                 body={postData.body}
                 id={postData.id}
                 userId={postData.userId}
-                clicked={() => postSelectedHandler(postData.id)}
+                clicked={() => postSelectedHandler(postData)}
                 deleteOperation={(id: number) => checkDelete(id)}
                 data-testid="postMainDiv"
               />

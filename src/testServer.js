@@ -70,7 +70,27 @@ const server = setupServer(
         error: 'Please add request handler',
       })
     );
-  })
+  }),
+  rest.delete(`${URL}/1`, (req, res, ctx) =>
+    res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        message: 'message',
+        data: {},
+      })
+    )
+  ),
+  rest.delete(`${URL}/2`, (req, res, ctx) =>
+    res(
+      ctx.status(400),
+      ctx.json({
+        success: false,
+        message: 'message',
+        data: {},
+      })
+    )
+  )
 );
 
 beforeAll(() => server.listen());
