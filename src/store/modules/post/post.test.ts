@@ -23,6 +23,7 @@ import reducer, {
   loadPost,
   getPost,
   deletePost,
+  postPost,
 } from './index';
 import api from '../../../lib/api';
 import { URL } from '../../../types/post/data';
@@ -31,6 +32,13 @@ import { server, rest } from '../../../testServer';
 const mockStore = configureMockStore([thunk]);
 
 const axiosResponse: AxiosResponse = {
+  data: [],
+  status: 201,
+  statusText: 'OK',
+  config: {},
+  headers: {},
+};
+const sampleDeleteFailureResponse: AxiosResponse = {
   data: [],
   status: 201,
   statusText: 'OK',
@@ -152,34 +160,122 @@ describe('post reducer', () => {
   });
   it('should run getPost with success ', async () => {
     const store = mockStore(initialState);
-    await store.dispatch(getPost({ ...sampleData }));
+    store.dispatch(getPost({ ...sampleData }));
     const actions = store.getActions();
     expect(actions[0].type).toBe('post/loadPostStart');
     expect(actions[1].type).toBe('post/loadPostComplete');
   });
   it('should run getPost with failure ', async () => {
     const store = mockStore(initialState);
-    await store.dispatch(getPost());
+    store.dispatch(getPost({ title: '', body: '' }));
     const actions = store.getActions();
     expect(actions[0].type).toBe('post/loadPostStart');
     expect(actions[1].type).toBe('post/loadPostFailed');
   });
-  it('should run deletePost with success', async () => {
+
+  it('should run deletePost with success ', async () => {
     const store = mockStore(initialState);
-    await store.dispatch(deletePost(URL, 1)).then(() => {
-      const actions = store.getActions();
-      console.log(actions);
-      // expect(actions[0].type).toBe('post/deletePostStart');
-      // expect(actions[1].type).toBe('post/deletePostComplete');
-    });
+    await waitFor(() => store.dispatch(deletePost(URL, '1')));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/deletePostStart');
+    expect(actions[1].type).toBe('post/deletePostComplete');
   });
-  // it('should run deletePost with failure ', async () => {
-  //   const store = mockStore(initialState);
-  //   await store.dispatch(deletePost(`URL`, '2')).then(() => {
-  //     const actions = store.getActions();
-  //     console.log(actions);
-  //     expect(actions[0].type).toBe('post/deletePostStart');
-  //     expect(actions[1].type).toBe('post/deletePostFailed');
-  //   });
-  // });
+
+  it('should run deletePost with failure ', async () => {
+    const store = mockStore(initialState);
+    await waitFor(() => store.dispatch(deletePost(URL, '1')));
+    await mockAxios.delete.mockImplementationOnce(() => ({
+      ...axiosResponse,
+      data: {},
+    }));
+    await waitFor(() => store.dispatch(deletePost(URL, '1')));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/deletePostStart');
+    expect(actions[1].type).toBe('post/deletePostComplete');
+    expect(actions[2].type).toBe('post/deletePostStart');
+    expect(actions[3].type).toBe('post/deletePostFailed');
+  });
+
+  it('should run deletePost with catch error ', async () => {
+    const store = mockStore(initialState);
+    await mockAxios.delete.mockImplementationOnce(() =>
+      Promise.reject({
+        error: 'Something bad happened !',
+      })
+    );
+    await waitFor(() => store.dispatch(deletePost(URL, '2')));
+
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/deletePostStart');
+    expect(actions[1].type).toBe('post/deletePostFailed');
+    expect(actions[1].payload.error).toContain('Operation failed');
+  });
+
+  it('should run deletePost with custom catch error ', async () => {
+    const store = mockStore(initialState);
+    await mockAxios.delete.mockImplementationOnce(() =>
+      Promise.reject({
+        error: { message: 'Something bad happened !' },
+      })
+    );
+    await waitFor(() => store.dispatch(deletePost(URL, '2')));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/deletePostStart');
+    expect(actions[1].type).toBe('post/deletePostFailed');
+    expect(actions[1].payload.error).toBeTruthy();
+  });
+
+  it('should run postPost with success ', async () => {
+    const store = mockStore(initialState);
+    await waitFor(() => store.dispatch(postPost(URL, { sampleData })));
+    await mockAxios.post.mockImplementationOnce(() => ({
+      ...axiosResponse,
+      data: sampleData,
+    }));
+    await waitFor(() => store.dispatch(postPost(URL, { sampleData })));
+
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/postPostStart');
+    expect(actions[1].type).toBe('post/postPostFailed');
+    expect(actions[2].type).toBe('post/postPostStart');
+    expect(actions[3].type).toBe('post/postPostComplete');
+  });
+
+  it('should run postPost with failure ', async () => {
+    const store = mockStore(initialState);
+    await waitFor(() => store.dispatch(postPost(URL, { title: '', body: '' })));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/postPostStart');
+    expect(actions[1].type).toBe('post/postPostFailed');
+  });
+
+  it('should run postPost with catch error ', async () => {
+    const store = mockStore(initialState);
+    await mockAxios.delete.mockImplementationOnce(() =>
+      Promise.reject({
+        error: 'Something bad happened !',
+      })
+    );
+    await waitFor(() => store.dispatch(postPost(URL, { title: '', body: '' })));
+
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/postPostStart');
+    expect(actions[1].type).toBe('post/postPostFailed');
+    expect(actions[1].payload.error).toBeTruthy();
+  });
+
+  it('should run loadPost with success ', async () => {
+    const store = mockStore(initialState);
+    await waitFor(() => store.dispatch(loadPost(sampleData)));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/loadPostStart');
+    expect(actions[1].type).toBe('post/loadPostComplete');
+  });
+  it('should run loadPost with failure ', async () => {
+    const store = mockStore(initialState);
+    await waitFor(() => store.dispatch(loadPost({})));
+    const actions = store.getActions();
+    expect(actions[0].type).toBe('post/loadPostStart');
+    expect(actions[1].type).toBe('post/loadPostFailed');
+  });
 });

@@ -88,18 +88,15 @@ const posts: PostsAPI = {
         'Access-Control-Allow-Origin': '*',
       },
     });
-
-    if (res) {
-      if (res.status === 200) {
-        return {
-          success: true,
-          message: res?.data?.message || 'Success',
-        };
-      }
+    if (res && res?.status !== 200) {
+      return {
+        success: false,
+        message: res?.data?.message || 'Unknown error',
+      };
     }
     return {
-      success: false,
-      message: res.data.message || 'Unknown error',
+      success: true,
+      message: res?.data?.message || 'Success',
     };
   },
   /**

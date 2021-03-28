@@ -203,9 +203,9 @@ export const loadPost = (data: PostDataObj): AppThunk => async (
   dispatch: AppDispatch
 ) => {
   dispatch(loadPostStart());
-  try {
+  if (data?.title) {
     dispatch(loadPostComplete(data));
-  } catch (error) {
+  } else {
     dispatch(loadPostFailed());
   }
 };
@@ -226,7 +226,8 @@ export const postPost = (
 
   try {
     const result = await api.posts.postPost(apiResource, val);
-    if (result.success) {
+    const { success } = result;
+    if (result && success) {
       dispatch(postPostComplete());
     } else {
       dispatch(postPostFailed({ error: 'Operation dailed' }));
@@ -285,14 +286,9 @@ export const deletePost = (apiResource: string, id: number): AppThunk => async (
       dispatch(deletePostFailed({ error: 'Operation dailed' }));
     }
   } catch (error) {
-    let errorMessage = error;
-    if (error && error.message) {
-      errorMessage = error.message;
-    }
-
     dispatch(
       deletePostFailed({
-        error: errorMessage,
+        error: error?.message || 'Operation failed',
       })
     );
   }
@@ -308,17 +304,9 @@ export const getPost = (postData: PostDataObj): AppThunk => async (
   dispatch: AppDispatch
 ) => {
   dispatch(loadPostStart());
-  try {
-    if (postData.id) {
-      dispatch(loadPostComplete(postData));
-    } else {
-      dispatch(loadPostFailed());
-    }
-  } catch (error) {
-    // let errorMessage = error;
-    // if (error && error.message) {
-    //   errorMessage = error.message;
-    // }
+  if (postData.id) {
+    dispatch(loadPostComplete(postData));
+  } else {
     dispatch(loadPostFailed());
   }
 };
