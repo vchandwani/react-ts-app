@@ -124,14 +124,9 @@ export const loadPosts = (apiResource: string): AppThunk => async (
       })
     );
   } catch (error) {
-    let errorMessage = error;
-    if (error && error.message) {
-      errorMessage = error.message;
-    }
-
     dispatch(
       loadPostsFailed({
-        error: errorMessage,
+        error: error?.message || error,
       })
     );
   }

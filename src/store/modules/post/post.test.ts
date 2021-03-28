@@ -25,9 +25,7 @@ import reducer, {
   deletePost,
   postPost,
 } from './index';
-import api from '../../../lib/api';
 import { URL } from '../../../types/post/data';
-import { server, rest } from '../../../testServer';
 
 const mockStore = configureMockStore([thunk]);
 
