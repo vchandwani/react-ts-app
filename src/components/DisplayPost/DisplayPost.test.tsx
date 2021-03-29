@@ -173,14 +173,16 @@ describe('Post component loaded ', () => {
     const postCardNew = getAllByTestId('postCard');
     expect(postCardNew).toHaveLength(6);
   });
-  // test('on click of post div post is selected', async () => {
-  //   act(async () => {
-  //     const { getByTestId, getAllByTestId, rerender } = render(wrapper);
-  //     const postCard = getAllByTestId('postCard');
-  //     expect(postCard[0]).toBeTruthy();
-  //     await waitFor(() => fireEvent.click(postCard[0]));
-  //   });
-  // });
+
+  test('on click of post div post is selected', async () => {
+    await act(async () => {
+      const { getByTestId, getAllByTestId, rerender } = render(wrapper);
+      const postCard = getAllByTestId('postCard');
+      expect(postCard[0]).toBeTruthy();
+      await waitFor(() => fireEvent.click(postCard[0]));
+    });
+  });
+
   test('on click of delete button of post request is sent', () => {
     const storeSelectedPost = mockStore({
       ...initialStoreData,

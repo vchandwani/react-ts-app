@@ -12,6 +12,28 @@ import thunk from 'redux-thunk';
 import { AUTHOR, USERID } from '../../types/post/data';
 import Post, { PostProps } from './Post';
 
+import reducer, {
+  PostActionPayload,
+  initialState,
+  loadPostStart,
+  clearResults,
+  PostState,
+  loadPostFailed,
+  loadPostComplete,
+  postPostComplete,
+  postPostStart,
+  postPostFailed,
+  actionedClear,
+  editableVal,
+  deletePostStart,
+  deletePostComplete,
+  deletePostFailed,
+  loadPost,
+  getPost,
+  deletePost,
+  postPost,
+} from '../../store/modules/post';
+
 afterEach(cleanup);
 
 const mockStore = configureStore([thunk]);
@@ -73,6 +95,7 @@ const setup = (data: PostProps = initialData, storeData = store) => {
 
 describe('Post component loaded ', () => {
   let wrapper: ReactElement;
+  let currentState: PostState;
 
   beforeEach(() => {
     wrapper = setup(initialData, store);
@@ -163,6 +186,31 @@ describe('Post component loaded ', () => {
     expect(dialogDeleteButton).toBeTruthy();
     expect(dialogDeleteButton.innerHTML).toContain('Confirm');
     await waitFor(() => fireEvent.click(dialogDeleteButton));
+  });
+  test('displays confirmation dialog and click of  confirm ', async () => {
+    const storeActioned = mockStore({
+      ...store,
+      post: {
+        isLoading: false,
+        isLoaded: true,
+        actioned: true,
+        editable: true,
+      },
+    });
+    wrapper = setup(initialData, storeActioned);
+    const { getByTestId } = render(wrapper);
+    const deleteLink = getByTestId('deleteLink');
+    expect(deleteLink).toBeTruthy();
+    fireEvent.click(deleteLink);
+    const postDialogDiv = getByTestId('postDialogDiv');
+    expect(postDialogDiv).toBeTruthy();
+    const notificationDiv = getByTestId('notificationDiv');
+    expect(notificationDiv).toBeTruthy();
+
+    expect(notificationDiv.innerHTML).toContain('Post deleted');
+    const dialogCloseButton = getByTestId('dialogCloseButton');
+    expect(dialogCloseButton.innerHTML).toContain('Close');
+    fireEvent.click(dialogCloseButton);
   });
 
   test('after click of delete icon and loading is visible', () => {
